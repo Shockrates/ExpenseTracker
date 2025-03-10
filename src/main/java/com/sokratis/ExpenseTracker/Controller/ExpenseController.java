@@ -1,10 +1,11 @@
 package com.sokratis.ExpenseTracker.Controller;
 
-import java.util.Date;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 //import static org.springframework.http.ResponseEntity.status;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,10 +36,6 @@ public class ExpenseController {
     @GetMapping("/{id}")
     public ResponseEntity<ExpenseDTO> getExpense(@PathVariable Long id){
  
-        // return expenseService.fetchExpense(id)
-        //     .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-        //     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
         return expenseService.fetchExpense(id)
         .map(expense -> ResponseEntity.status(HttpStatus.OK).body(expense))
         .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -50,7 +47,7 @@ public class ExpenseController {
         try {
             ExpenseDTO createdExpense = expenseService.saveExpense(expense);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdExpense);
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -62,8 +59,18 @@ public class ExpenseController {
             return expenseService.updateExpense(id, expense)
                     .map(updatedExpense -> ResponseEntity.status(HttpStatus.OK).body(updatedExpense))
                     .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteExpense(@PathVariable Long id) {
+        try {
+            expenseService.deleteExpenseById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

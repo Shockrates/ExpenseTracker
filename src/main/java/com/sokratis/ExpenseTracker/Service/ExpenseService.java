@@ -24,18 +24,18 @@ public class ExpenseService implements IExpenseService{
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<ExpenseDTO> fetchExpenseList(){
-        
-        return ExpenseMapper.toDTOList(expenseRepository.findAll());
-        
+    // Retrive all Expenses
+    public List<ExpenseDTO> fetchExpenseList(){  
+        return ExpenseMapper.toDTOList(expenseRepository.findAll());  
     }
 
+    // Retrieve an expense by ID
     public Optional<ExpenseDTO> fetchExpense(Long ExpenseId ){
-       
         return expenseRepository.findById(ExpenseId)
         .map(ExpenseMapper::toDTO);
     }
 
+     // Create a new expense
     public ExpenseDTO saveExpense(Expense expense) {
         
         User user = userRepository.findById(expense.getExpenseUser().getUserId())
@@ -49,13 +49,19 @@ public class ExpenseService implements IExpenseService{
         return ExpenseMapper.toDTO(expenseRepository.save(expense));
     }
 
+    // Update an existing expense
     public Optional<ExpenseDTO> updateExpense(Long ExpenseId, Expense updatedExpense){
 
         return expenseRepository.findById(ExpenseId).map(expense -> {
             
+            if (!userRepository.existsById(updatedExpense.getExpenseUser().getUserId())) {
+                throw new RuntimeException("User not found");
+            }
+            if (!categoryRepository.existsById(updatedExpense.getExpenseCategory().getCategoryId())) {
+                throw new RuntimeException("Category not found");
+            }
             updatedExpense.setExpenseId(expense.getExpenseId());
-            Expense savedExpense = expenseRepository.save(updatedExpense);
-            return ExpenseMapper.toDTO(savedExpense);
+            return ExpenseMapper.toDTO(expenseRepository.save(updatedExpense));
         });
     }
 
