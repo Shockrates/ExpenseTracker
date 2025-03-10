@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,13 +41,29 @@ public class ExpenseController {
 
         return expenseService.fetchExpense(id)
         .map(expense -> ResponseEntity.status(HttpStatus.OK).body(expense))
-        .orElse(ResponseEntity.notFound().build());
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody Expense expense) {
+    public ResponseEntity<?> createExpense(@RequestBody Expense expense) {
         
-        ExpenseDTO createdExpense = expenseService.saveExpense(expense);
-        return new ResponseEntity<>(createdExpense, HttpStatus.CREATED);
+        try {
+            ExpenseDTO createdExpense = expenseService.saveExpense(expense);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdExpense);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateExpense(@PathVariable Long id, @RequestBody Expense expense) {
+        try {
+            
+            return expenseService.updateExpense(id, expense)
+                    .map(updatedExpense -> ResponseEntity.status(HttpStatus.OK).body(updatedExpense))
+                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

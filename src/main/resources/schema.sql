@@ -8,4 +8,4 @@ INSERT INTO category(category_id,category_name) VALUES (0,'EDUCATION');
 INSERT INTO category(category_id,category_name) VALUES (0,'HEALTH');
 INSERT INTO category(category_id,category_name) VALUES (0,'GAS');
 
-INSERT INTO expense (expense_id, expense_name, expense_value, expense_date, user_id,category_id,created_at, updated_at ) VALUES (0,'', 235, '2025-03-02', 1, 1,'2025-03-02','2025-03-02');
+INSERT INTO expense (expense_id, expense_description, expense_amount, expense_date, user_id,category_id,created_at, updated_at ) VALUES (0,'', 235, '2025-03-02', 1, 1,'2025-03-02','2025-03-02');

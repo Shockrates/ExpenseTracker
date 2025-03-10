@@ -39,16 +39,16 @@ public class Expense{
     @Column(name = "expense_date")
     private Date expenseDate;
 
-    @Value("")
+    @Builder.Default
     @Column(name = "expense_description")
-    private String expensDescription;
+    private String expenseDescription = "";
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User expenseUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = false)
     private Category expenseCategory;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -59,6 +59,7 @@ public class Expense{
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDate.now();
+        updatedAt = LocalDate.now();
     }
 
     @PreUpdate

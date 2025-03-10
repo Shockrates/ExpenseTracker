@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
+import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
+import com.sokratis.ExpenseTracker.Model.User;
+import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
+import com.sokratis.ExpenseTracker.Repository.UserRepository;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 
-import jakarta.websocket.server.ServerEndpoint;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -18,6 +21,8 @@ import lombok.AllArgsConstructor;
 public class ExpenseService implements IExpenseService{
 
     private final ExpenseRepository expenseRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<ExpenseDTO> fetchExpenseList(){
         
@@ -26,29 +31,32 @@ public class ExpenseService implements IExpenseService{
     }
 
     public Optional<ExpenseDTO> fetchExpense(Long ExpenseId ){
-        //Expense expense = expenseRepository.findById(ExpenseId).get();
+       
         return expenseRepository.findById(ExpenseId)
         .map(ExpenseMapper::toDTO);
     }
 
     public ExpenseDTO saveExpense(Expense expense) {
-        // Set created_at to the current timestamp
-        //expense.setCreatedAt(java.time.LocalDate.now());
+        
+        User user = userRepository.findById(expense.getExpenseUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Category category = categoryRepository.findById(expense.getExpenseCategory().getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+
+        expense.setExpenseUser(user);
+        expense.setExpenseCategory(category);
 
         return ExpenseMapper.toDTO(expenseRepository.save(expense));
     }
 
-    public Expense updateExpense(Expense expense, Long ExpenseId){
+    public Optional<ExpenseDTO> updateExpense(Long ExpenseId, Expense updatedExpense){
 
-        if (expenseRepository.existsById(ExpenseId)) {
-            expense.setExpenseId(ExpenseId);
-
-            // Set updated_at to the current timestamp
-            expense.setUpdatedAt(java.time.LocalDate.now());
-
-            return expenseRepository.save(expense);
-        }
-        throw new RuntimeException("Expense not found with id: " + ExpenseId);
+        return expenseRepository.findById(ExpenseId).map(expense -> {
+            
+            updatedExpense.setExpenseId(expense.getExpenseId());
+            Expense savedExpense = expenseRepository.save(updatedExpense);
+            return ExpenseMapper.toDTO(savedExpense);
+        });
     }
 
     public void deleteExpenseById(Long ExpenseId){

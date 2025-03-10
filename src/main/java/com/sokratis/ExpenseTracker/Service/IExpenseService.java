@@ -36,7 +36,7 @@ public interface IExpenseService {
      * @param ExpenseId the ID of the Expense to update
      * @return the updated Expense
      */
-    Expense updateExpense(Expense expense, Long ExpenseId);
+    Optional<ExpenseDTO> updateExpense(Long ExpenseId, Expense expense);
 
     /**
      * Deletes a Expense entity by its ID.
