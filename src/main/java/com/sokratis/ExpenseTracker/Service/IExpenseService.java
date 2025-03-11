@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
 
 public interface IExpenseService {
@@ -43,5 +44,13 @@ public interface IExpenseService {
      * @param ExpenseId the ID of the Expense to delete
      */
     void deleteExpenseById(Long ExpenseId);
+
+
+    /**
+     * Fetches an Expense entity.
+     * @param category the Category of the Expense to fetch
+     * @return the requested Expense
+     */
+    public List<ExpenseDTO> getExpensesByCategory(Long categoryId);
 
 }

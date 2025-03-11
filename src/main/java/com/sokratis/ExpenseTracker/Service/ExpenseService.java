@@ -73,6 +73,16 @@ public class ExpenseService implements IExpenseService{
         }
     }
 
+    public List<ExpenseDTO> getExpensesByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        if (expenseRepository.findByExpenseCategory(category).isEmpty()) {
+            throw new IllegalArgumentException("Expense with category " + category.getCategoryName() + " does not have any expense");
+        }
+        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category)) ;
+    }
+
+
 
 
 }
