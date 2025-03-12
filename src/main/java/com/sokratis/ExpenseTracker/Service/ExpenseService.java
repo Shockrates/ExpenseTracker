@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,13 +74,23 @@ public class ExpenseService implements IExpenseService{
         }
     }
 
-    public List<ExpenseDTO> getExpensesByCategory(Long categoryId) {
+    public List<ExpenseDTO> fetchExpensesByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    
+        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseUser(user)); 
+    }
+
+    public List<ExpenseDTO> fetchExpensesByCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        if (expenseRepository.findByExpenseCategory(category).isEmpty()) {
-            throw new IllegalArgumentException("Expense with category " + category.getCategoryName() + " does not have any expense");
-        }
-        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category)) ;
+
+        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category)); 
+    }
+
+    public List<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate) {
+
+        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseDateBetween(startDate, endDate)); 
     }
 
 

@@ -1,8 +1,10 @@
 package com.sokratis.ExpenseTracker.Controller;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +35,7 @@ public class ExpenseController {
 
     @GetMapping
     public ResponseEntity<List<ExpenseDTO>> getAllExpenses(){
+        System.out.println("FIND ALL");
         return ResponseEntity.status(HttpStatus.OK).body(expenseService.fetchExpenseList());
     }
 
@@ -77,15 +80,40 @@ public class ExpenseController {
         }
     }
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByCategory(@RequestParam Long categoryId){
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByUser(@PathVariable Long userId){
+        
         try {
-            List<ExpenseDTO> expenses = expenseService.getExpensesByCategory(categoryId);
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("List of Expenses by Category ", expenses));
+            List<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId);
+            String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUserName();
+            System.out.println(expenses);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
         }
     }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByCategory(@PathVariable Long categoryId){
+        
+        try {
+            List<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId);
+            String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategoryName();
+            System.out.println(expenses);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/dates")
+    public ResponseEntity<List<ExpenseDTO>> getExpensesBetweenDates(
+        @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+        @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(expenseService.fetchExpensesBetweenDates(startDate, endDate));
+    }
+
 
     
 }
