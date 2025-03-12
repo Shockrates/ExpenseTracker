@@ -111,6 +111,7 @@ public class ExpenseController {
         @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
         @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate
     ) {
+        
         return ResponseEntity.status(HttpStatus.OK).body(expenseService.fetchExpensesBetweenDates(startDate, endDate));
     }
 

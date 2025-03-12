@@ -37,7 +37,7 @@ public class Expense{
     private Double expenseAmount;
 
     @Column(name = "expense_date")
-    private Date expenseDate;
+    private LocalDate expenseDate;
 
     @Builder.Default
     @Column(name = "expense_description")
