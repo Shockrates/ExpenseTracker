@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.User;
@@ -53,5 +54,16 @@ public class ExpenseMapper {
         return dtoList.stream()
             .map(dto -> toEntity(dto, user, category))
             .collect(Collectors.toList());
+    }
+
+    public static ExpenseListDTO toExpenseListDTO(List<Expense> expenses){
+
+        List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenses);
+        double totalAmount = expenses.stream()
+                .mapToDouble(Expense::getExpenseAmount)
+                .sum();
+        
+        return new ExpenseListDTO(expenseDTOs, totalAmount);
+
     }
 }

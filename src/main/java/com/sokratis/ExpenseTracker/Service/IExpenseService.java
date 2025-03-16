@@ -68,4 +68,20 @@ public interface IExpenseService {
      * @return the requested Expense List
      */
     public List<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate);
+
+     /**
+     * Fetches the list of all Expense entities made with amounts between two ranges.
+     * @param lowsetAmount the lowset amount exense
+     * @param  highestAmount the highest amount exense
+     * @return the requested Expense List
+     */
+    public List<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highest);
+
+
+    /**
+     * Fetches the total amount of all Expense entities.
+     * @return  the Total of all Expenses
+     */
+    public Double  calculateTotalExpenseAmount();
+
 }

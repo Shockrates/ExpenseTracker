@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
@@ -28,6 +29,11 @@ public class ExpenseService implements IExpenseService{
     // Retrive all Expenses
     public List<ExpenseDTO> fetchExpenseList(){  
         return ExpenseMapper.toDTOList(expenseRepository.findAll());  
+    }
+
+    // Retrive all Expenses with Total Amount
+    public ExpenseListDTO fetchExpenseListWDetails(){  
+        return ExpenseMapper.toExpenseListDTO(expenseRepository.findAll());  
     }
 
     // Retrieve an expense by ID
@@ -91,6 +97,17 @@ public class ExpenseService implements IExpenseService{
     public List<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate) {
 
         return ExpenseMapper.toDTOList(expenseRepository.findByExpenseDateBetween(startDate, endDate)); 
+    }
+
+   
+    public List<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highestAmount) {
+        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseAmountBetween(lowestAmount, highestAmount));
+    }
+
+    @Override
+    public Double calculateTotalExpenseAmount() {
+        
+        return expenseRepository.getTotalExpenseAmount();
     }
 
 

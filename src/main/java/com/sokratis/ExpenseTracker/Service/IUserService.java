@@ -11,8 +11,8 @@ import com.sokratis.ExpenseTracker.Model.User;
 public interface IUserService {
     
     /**
-     * Fetches the list of all Expense entities.
-     * @return a list of Expenses
+     * Fetches the list of all User entities.
+     * @return a list of Users
      */
     List<UserDTO> fetchUserList();
 
@@ -32,15 +32,31 @@ public interface IUserService {
 
     /**
      * Updates an existing User entity.
-     * @param User the User with updated information
+     * @param updatedUserDTO the User with updated information
      * @param UserId the ID of the User to update
      * @return the updated User
      */
-    Optional<UserDTO> updateUser(Long UserId, User user);
+    Optional<UserDTO> updateUser(Long UserId, UserDTO updatedUserDTO);
+
+
+    /**
+     * Updates the password of an existing User entity.
+     * @param ewPassword the User's updated password
+     * @param UserId the ID of the User to update
+     * @return the updated User
+     */
+    public void updatePassword(Long UserId, String newPassword);
 
     /**
      * Deletes a User entity by its ID.
      * @param UserId the ID of the User to delete
      */
     void deleteUserById(Long userId);
+
+    /**
+     * Fetches the total of all Expense made by Use.
+     * @param UserId the ID of the User to calculate all expenses
+     * @return the Total of all Expenses
+     */
+    public Double  calculateTotalbyUser(Long UserId);
 }

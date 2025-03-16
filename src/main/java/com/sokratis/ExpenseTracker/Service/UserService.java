@@ -12,15 +12,17 @@ import com.sokratis.ExpenseTracker.DTO.UserDTO;
 
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
+import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements IUserService{
 
     private final UserRepository userRepository;
+    private final ExpenseRepository expenseRepository;
     private final PasswordEncoder passwordEncoder;
 
     // Retrive all Users
@@ -75,10 +77,16 @@ public class UserService {
     }
 
     // Delete user
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found!");
         }
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Double calculateTotalbyUser(Long UserId) {
+        
+        return expenseRepository.getTotalExpensesByUser(UserId);
     }
 }

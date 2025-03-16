@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.lang.NonNull;
 
@@ -28,5 +30,15 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>{
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
     List<Expense> findByExpenseDateBetween(LocalDate startDate, LocalDate endDate);
 
-    List<Expense> findByExpenseAmountBetween(Double start, Double end);
+    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
+    List<Expense> findByExpenseAmountBetween(Double lowestAmount, Double highestAmount);
+
+    @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e")
+    Double getTotalExpenseAmount();
+
+    @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e WHERE e.expenseUser.id = :userId")
+    Double getTotalExpensesByUser(@Param("userId") Long userId);
+
+    @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e WHERE e.expenseCategory.id = :categoryId")
+    Double getTotalExpensesByCategory(@Param("categoryId") Long categoryId);
 }

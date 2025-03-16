@@ -84,10 +84,17 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
         try {
-            userService.deleteUser(id);
+            userService.deleteUserById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("User not found with id "+id ));
         }
     }
+
+    @GetMapping("/{id}/total")
+    public ResponseEntity<ApiResponse<Double>> getUserTotalExpenseAmount(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of user is", userService.calculateTotalbyUser(id)));
+    }
+
+
 }

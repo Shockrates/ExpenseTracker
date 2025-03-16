@@ -80,6 +80,8 @@ public class ExpenseController {
         }
     }
 
+    //CUSTOM ENDPOINTS
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByUser(@PathVariable Long userId){
         
@@ -106,15 +108,29 @@ public class ExpenseController {
         }
     }
 
-    @GetMapping("/dates")
-    public ResponseEntity<List<ExpenseDTO>> getExpensesBetweenDates(
+    @GetMapping("/between-dates")
+    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesBetweenDates(
         @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
         @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate
     ) {
-        
-        return ResponseEntity.status(HttpStatus.OK).body(expenseService.fetchExpensesBetweenDates(startDate, endDate));
+        List<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenDates(startDate, endDate);
+        String message = expenses.isEmpty() ? "No Expenses for this Time Range" : "List of Expenses between "+ startDate + " and " + endDate;
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
     }
 
+    @GetMapping("/between-ranges")
+    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesBetweenRanges(@RequestParam Double lowestAmount, @RequestParam Double highestAmount) {
 
-    
+        List<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenRanges(lowestAmount, highestAmount);
+        String message = expenses.isEmpty() ? "No Expenses for this price Range" : "List of Expenses between "+ lowestAmount + " and " + highestAmount;
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<ApiResponse<Double>> getTotalExpenseAmount(){
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount is", expenseService.calculateTotalExpenseAmount()));
+    }
+
+        
 }
