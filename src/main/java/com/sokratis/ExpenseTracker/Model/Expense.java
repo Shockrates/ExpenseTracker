@@ -1,9 +1,8 @@
 package com.sokratis.ExpenseTracker.Model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.hibernate.annotations.DynamicInsert;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@DynamicInsert
 public class Expense{
     
     @Id

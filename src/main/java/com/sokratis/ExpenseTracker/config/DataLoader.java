@@ -2,9 +2,6 @@ package com.sokratis.ExpenseTracker.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import com.sokratis.ExpenseTracker.Model.Category;
-import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
 

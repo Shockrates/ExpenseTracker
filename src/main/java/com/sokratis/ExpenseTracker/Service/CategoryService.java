@@ -3,11 +3,12 @@ package com.sokratis.ExpenseTracker.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
+import com.sokratis.ExpenseTracker.utils.EntityUtils;
 
 import lombok.AllArgsConstructor;
 
@@ -47,7 +48,9 @@ public class CategoryService implements ICategoryService{
                 throw new IllegalArgumentException("Category with the same name already exists!");
             }
 
-            return categoryRepository.save(updatedCategory);
+            BeanUtils.copyProperties(updatedCategory, category, EntityUtils.getNullPropertyNames(updatedCategory));
+
+            return categoryRepository.save(category);
         });
     }
 
@@ -61,7 +64,7 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public Double calculateTotalbyCategory(Long CategoryId) {
-        return expenseRepository.getTotalExpensesByUser(CategoryId);
+        return expenseRepository.getTotalExpensesByCategory(CategoryId);
     }
 
     

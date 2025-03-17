@@ -3,9 +3,7 @@ package com.sokratis.ExpenseTracker.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
 
 public interface IExpenseService {

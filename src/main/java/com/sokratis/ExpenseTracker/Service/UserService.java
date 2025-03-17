@@ -3,6 +3,7 @@ package com.sokratis.ExpenseTracker.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
+import com.sokratis.ExpenseTracker.utils.EntityUtils;
 
 import lombok.AllArgsConstructor;
 
@@ -54,14 +56,14 @@ public class UserService implements IUserService{
 
         return userRepository.findById(id).map(user -> {
 
-            // ✅ Check if the new email already exists (excluding current user)
+            // Check if the new email already exists (excluding current user)
             Optional<User> existingUserWithEmail = userRepository.findByUserEmail(updatedUserDTO.getUserEmail());
             if (existingUserWithEmail.isPresent() && !existingUserWithEmail.get().getUserId().equals(id)) {
                 throw new IllegalArgumentException("Email is already in use by another user!");
             }
 
-            user.setUserName(updatedUserDTO.getUserName());
-            user.setUserEmail(updatedUserDTO.getUserEmail());
+            BeanUtils.copyProperties(updatedUserDTO, user, EntityUtils.getNullPropertyNames(updatedUserDTO));
+
             return UserMapper.toDTO(userRepository.save(user));
         });
     }

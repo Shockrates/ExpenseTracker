@@ -1,9 +1,7 @@
 package com.sokratis.ExpenseTracker.Controller;
 
-
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Service.ExpenseService;
 
@@ -34,9 +31,9 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @GetMapping
-    public ResponseEntity<List<ExpenseDTO>> getAllExpenses(){
+    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getAllExpenses(){
         System.out.println("FIND ALL");
-        return ResponseEntity.status(HttpStatus.OK).body(expenseService.fetchExpenseList());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Expense List", expenseService.fetchExpenseList()) );
     }
 
     @GetMapping("/{id}")

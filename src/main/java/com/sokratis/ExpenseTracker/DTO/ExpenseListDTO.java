@@ -1,6 +1,5 @@
 package com.sokratis.ExpenseTracker.DTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;

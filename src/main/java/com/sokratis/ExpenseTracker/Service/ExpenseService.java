@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
@@ -14,6 +15,7 @@ import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
+import com.sokratis.ExpenseTracker.utils.EntityUtils;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 
 import lombok.AllArgsConstructor;
@@ -60,15 +62,21 @@ public class ExpenseService implements IExpenseService{
     public Optional<ExpenseDTO> updateExpense(Long ExpenseId, Expense updatedExpense){
 
         return expenseRepository.findById(ExpenseId).map(expense -> {
+
+            BeanUtils.copyProperties(updatedExpense, expense, EntityUtils.getNullPropertyNames(updatedExpense));
             
-            if (!userRepository.existsById(updatedExpense.getExpenseUser().getUserId())) {
-                throw new RuntimeException("User not found");
-            }
-            if (!categoryRepository.existsById(updatedExpense.getExpenseCategory().getCategoryId())) {
-                throw new RuntimeException("Category not found");
-            }
-            updatedExpense.setExpenseId(expense.getExpenseId());
-            return ExpenseMapper.toDTO(expenseRepository.save(updatedExpense));
+            if (updatedExpense.getExpenseUser() != null && userRepository.existsById(updatedExpense.getExpenseUser().getUserId())) {
+                expense.setExpenseUser(updatedExpense.getExpenseUser());
+            } else throw new RuntimeException("User not found");
+
+            if (updatedExpense.getExpenseCategory() != null && categoryRepository.existsById(updatedExpense.getExpenseCategory().getCategoryId())) {
+                expense.setExpenseCategory(updatedExpense.getExpenseCategory());
+            } else throw new RuntimeException("Category not found");
+
+
+            return ExpenseMapper.toDTO(
+                expenseRepository.save(expense)
+            );
         });
     }
 

@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
-import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.User;
-import com.sokratis.ExpenseTracker.Service.ExpenseService;
 import com.sokratis.ExpenseTracker.Service.UserService;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +29,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllEUsers(){
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.fetchUserList());
     }
@@ -70,8 +67,7 @@ public class UserController {
 
     @PatchMapping("/{id}/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(@PathVariable Long id, @RequestBody String newPassword) {
-        //userService.updatePassword(id, newPassword);
-        //return ResponseEntity.ok("Password updated successfully");
+    
 
         try {
             userService.updatePassword(id, newPassword);
