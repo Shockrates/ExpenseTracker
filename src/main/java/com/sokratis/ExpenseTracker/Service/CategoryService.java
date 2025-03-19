@@ -74,17 +74,14 @@ public class CategoryService implements ICategoryService{
         return expenseRepository.getTotalExpensesByCategory(CategoryId);
     }
 
-    // New method to fetch Category with its associated Expenses
+    
     public CategoryDTO fetchCategoryWithExpenses(Long categoryId) {
-        // Fetch the category by its id (without its expenses)
+        
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-
-        // Fetch the expenses associated with the category using ExpenseRepository
+                
         List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category));
                 
-
-        // Return CategoryDTO including all associated expenses
         return new CategoryDTO(category.getCategoryId(), category.getCategoryName(), expenseDTOs);
     }
 

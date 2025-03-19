@@ -33,6 +33,7 @@ public class CategoryController {
     @Transactional
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryDTO>>> getAllCategories(){
+       
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("List of Categories", categoryService.fetchCategoryList()));
     }
 
@@ -82,8 +83,10 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of category is", categoryService.calculateTotalbyCategory(id)));
     }
 
-    @GetMapping("/{id}/Expenses")
+    @GetMapping("/{id}/expenses")
+    
     public ResponseEntity<ApiResponse<CategoryDTO>> getCategoryWithExpenses(@PathVariable Long id){
+        System.out.println("All Categories Expenses");
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of category is", categoryService.fetchCategoryWithExpenses(id)));
     }
 

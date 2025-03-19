@@ -41,9 +41,9 @@ public class Expense{
     @Column(name = "expense_date")
     private LocalDate expenseDate;
 
-    @Builder.Default
+   
     @Column(name = "expense_description")
-    private String expenseDescription = "";
+    private String expenseDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
