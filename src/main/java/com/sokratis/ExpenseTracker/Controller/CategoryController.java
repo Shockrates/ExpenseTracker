@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
+import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.User;
@@ -28,13 +30,14 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Transactional
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Category>>> getAllCategories(){
+    public ResponseEntity<ApiResponse<List<CategoryDTO>>> getAllCategories(){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("List of Categories", categoryService.fetchCategoryList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Category>> getCategory(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<CategoryDTO>> getCategory(@PathVariable Long id){
  
         return categoryService.fetchCategory(id)
         .map(category -> ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Category Found", category)))
@@ -77,6 +80,11 @@ public class CategoryController {
     @GetMapping("/{id}/total")
     public ResponseEntity<ApiResponse<Double>> getCategoryTotalExpenseAmount(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of category is", categoryService.calculateTotalbyCategory(id)));
+    }
+
+    @GetMapping("/{id}/Expenses")
+    public ResponseEntity<ApiResponse<CategoryDTO>> getCategoryWithExpenses(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of category is", categoryService.fetchCategoryWithExpenses(id)));
     }
 
 

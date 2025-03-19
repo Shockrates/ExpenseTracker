@@ -2,9 +2,15 @@ package com.sokratis.ExpenseTracker.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.Mapper.CategoryMapper;
+import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
@@ -20,13 +26,14 @@ public class CategoryService implements ICategoryService{
     private final ExpenseRepository expenseRepository;
 
     @Override
-    public List<Category> fetchCategoryList() {
-        return categoryRepository.findAll();
+    public List<CategoryDTO> fetchCategoryList() {
+        return CategoryMapper.toDTOList( categoryRepository.findAll());
     }
 
     @Override
-    public Optional<Category> fetchCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId);
+    public Optional<CategoryDTO> fetchCategory(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+        .map(CategoryMapper::toDTO);
     }
 
     @Override
@@ -66,6 +73,22 @@ public class CategoryService implements ICategoryService{
     public Double calculateTotalbyCategory(Long CategoryId) {
         return expenseRepository.getTotalExpensesByCategory(CategoryId);
     }
+
+    // New method to fetch Category with its associated Expenses
+    public CategoryDTO fetchCategoryWithExpenses(Long categoryId) {
+        // Fetch the category by its id (without its expenses)
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        // Fetch the expenses associated with the category using ExpenseRepository
+        List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category));
+                
+
+        // Return CategoryDTO including all associated expenses
+        return new CategoryDTO(category.getCategoryId(), category.getCategoryName(), expenseDTOs);
+    }
+
+    
 
     
 }

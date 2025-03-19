@@ -2,6 +2,8 @@ package com.sokratis.ExpenseTracker.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 
 
@@ -12,14 +14,14 @@ public interface ICategoryService {
      * Fetches the list of all Category entities.
      * @return a list of Categories
      */
-    List<Category> fetchCategoryList();
+    List<CategoryDTO> fetchCategoryList();
 
     /**
      * Fetches an Category entity.
      * @param CategoryId the ID of the Category to fetch
      * @return the requested Category
      */
-    Optional<Category> fetchCategory(Long categoryId );
+    Optional<CategoryDTO> fetchCategory(Long categoryId );
 
      /**
      * Saves a Category entity.
