@@ -2,15 +2,11 @@ package com.sokratis.ExpenseTracker.Mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
-
-
 import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-
 import com.sokratis.ExpenseTracker.Model.Category;
-import com.sokratis.ExpenseTracker.Model.Expense;
+
 
 public class CategoryMapper {
     

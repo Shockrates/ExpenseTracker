@@ -1,11 +1,7 @@
 package com.sokratis.ExpenseTracker.Model;
 
 import java.time.LocalDate;
-
 import org.hibernate.annotations.DynamicInsert;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

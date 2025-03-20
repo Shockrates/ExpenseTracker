@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
-import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Service.CategoryService;
 
 import lombok.AllArgsConstructor;
