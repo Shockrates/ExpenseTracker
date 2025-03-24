@@ -2,21 +2,19 @@ package com.sokratis.ExpenseTracker.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-
-
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
-
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
-
 import lombok.AllArgsConstructor;
 
 @Service
@@ -26,6 +24,24 @@ public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final ExpenseRepository expenseRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
+
+    // @Autowired
+    // private JWTService jwtService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    public String verifyUser(User user) {
+
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(user.getUserName(), user.getUserPassword())
+        );
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(user.getUserName());
+        }
+        return "Failed to Login";
+    }
 
     // Retrive all Users
     public List<UserDTO> fetchUserList(){  
