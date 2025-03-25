@@ -11,11 +11,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserInfoDetails implements UserDetails{
 
+    private Long id;
     private String username; // Changed from 'name' to 'email' for clarity
     private String password;
     private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(User userInfo) {
+        this.id = userInfo.getUserId();
         this.username = userInfo.getUserEmail(); // Use email as username
         this.password = userInfo.getUserPassword();
         this.authorities = List.of(userInfo.getUserRoles().split(","))
@@ -27,6 +29,11 @@ public class UserInfoDetails implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+
+    public Long getId() {
+        return id;
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
+import com.sokratis.ExpenseTracker.Service.Interfaces.IUserService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
 import lombok.AllArgsConstructor;
 
@@ -35,11 +36,12 @@ public class UserService implements IUserService{
     public String verifyUser(User user) {
 
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(user.getUserName(), user.getUserPassword())
+            new UsernamePasswordAuthenticationToken(user.getUserEmail(), user.getUserPassword())
         );
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUserName());
+            return jwtService.generateToken(user.getUserEmail());
         }
+ 
         return "Failed to Login";
     }
 

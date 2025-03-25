@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
@@ -15,6 +16,7 @@ import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
+import com.sokratis.ExpenseTracker.Service.Interfaces.IExpenseService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 
@@ -30,7 +32,7 @@ public class ExpenseService implements IExpenseService{
 
     // Retrive all Expenses
     public List<ExpenseDTO> fetchExpenseList(){  
-        return ExpenseMapper.toDTOList(expenseRepository.findAll());  
+        return ExpenseMapper.toDTOList(expenseRepository.findAll(Sort.by(Sort.Direction.DESC, "expenseDate")));  
     }
 
     // Retrive all Expenses with Total Amount

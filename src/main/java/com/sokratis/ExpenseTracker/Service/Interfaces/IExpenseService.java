@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.Service;
+package com.sokratis.ExpenseTracker.Service.Interfaces;
 
 import java.time.LocalDate;
 import java.util.List;

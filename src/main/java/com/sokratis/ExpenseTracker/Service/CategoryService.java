@@ -13,6 +13,7 @@ import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
+import com.sokratis.ExpenseTracker.Service.Interfaces.ICategoryService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
 
 import lombok.AllArgsConstructor;

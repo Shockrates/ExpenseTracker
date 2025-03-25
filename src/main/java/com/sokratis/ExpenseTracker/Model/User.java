@@ -31,8 +31,9 @@ public class User {
     @Column(name = "user_password")
     private String userPassword;
 
+    @Builder.Default
     @Column(name = "user_roles")
-    private String userRoles;
+    private String userRoles ="USER";
 
     
 

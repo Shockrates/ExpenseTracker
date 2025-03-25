@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,6 +19,7 @@ import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Service.UserService;
+import com.sokratis.ExpenseTracker.utils.SecurityUtils;
 
 import lombok.AllArgsConstructor;
 
@@ -27,14 +29,28 @@ import lombok.AllArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final SecurityUtils securityUtils;
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody User user){
+     
+       
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User Logged In", userService.verifyUser(user))) ;
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
+        }
+    }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.fetchUserList());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<UserDTO>> getUser(@PathVariable Long id){
  
         return userService.fetchUser(id)
@@ -42,7 +58,7 @@ public class UserController {
         .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("User not found with id "+id )));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody User user) {
         
         try {
@@ -54,6 +70,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<UserDTO>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDto) {
         try {
             
@@ -65,7 +82,8 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{id}/password")
+    @PutMapping("/{id}/password")
+    @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<Void>> updatePassword(@PathVariable Long id, @RequestBody String newPassword) {
     
 
@@ -78,6 +96,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUserById(id);
@@ -88,6 +107,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/total")
+    @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<Double>> getUserTotalExpenseAmount(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of user is", userService.calculateTotalbyUser(id)));
     }

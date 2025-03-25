@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.Service;
+package com.sokratis.ExpenseTracker.Service.Interfaces;
 
 import java.util.List;
 import java.util.Optional;
