@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 //import static org.springframework.http.ResponseEntity.status;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +57,7 @@ public class ExpenseController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("@securityUtils.isOwnerOfExpense(#id)")
     public ResponseEntity<ApiResponse<ExpenseDTO>> updateExpense(@PathVariable Long id, @RequestBody Expense expense) {
         try {
             

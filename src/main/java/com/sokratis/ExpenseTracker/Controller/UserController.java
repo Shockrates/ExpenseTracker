@@ -1,6 +1,7 @@
 package com.sokratis.ExpenseTracker.Controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
+
 import com.sokratis.ExpenseTracker.Service.UserService;
-import com.sokratis.ExpenseTracker.utils.SecurityUtils;
+
 
 import lombok.AllArgsConstructor;
 
@@ -28,7 +30,7 @@ import lombok.AllArgsConstructor;
 public class UserController {
 
     private final UserService userService;
-    private final SecurityUtils securityUtils;
+
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody User user){
@@ -82,9 +84,9 @@ public class UserController {
 
     @PutMapping("/{id}/password")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
-    public ResponseEntity<ApiResponse<Void>> updatePassword(@PathVariable Long id, @RequestBody String newPassword) {
+    public ResponseEntity<ApiResponse<Void>> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> request) {
     
-
+        String newPassword = request.get("userPassword");
         try {
             userService.updatePassword(id, newPassword);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Password updated successfully", null));
