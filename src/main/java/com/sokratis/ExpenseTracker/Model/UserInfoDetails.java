@@ -1,7 +1,6 @@
 package com.sokratis.ExpenseTracker.Model;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +21,7 @@ public class UserInfoDetails implements UserDetails{
         this.password = userInfo.getUserPassword();
         this.authorities = List.of(userInfo.getUserRoles().split(","))
                 .stream()
+                .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +27,8 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
+    @NotNull(message = "Email cannot be null")  // Application-level validation
+    @Email(message = "Invalid email format")  // Application-level validation
     @Column(name = "user_email")
     private String userEmail;
 

@@ -59,6 +59,9 @@ public class UserService implements IUserService{
     // Create a new User
     public UserDTO saveUser(User user) {
         
+        if (user.getUserEmail() == null || user.getUserEmail() == "" ) {
+            throw new IllegalArgumentException("Please Enter a valid email");
+        }
         if (userRepository.findByUserEmail(user.getUserEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists!");
         }
