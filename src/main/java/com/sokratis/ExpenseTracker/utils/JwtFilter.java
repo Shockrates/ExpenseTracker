@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.config;
+package com.sokratis.ExpenseTracker.utils;
 
 
 import java.io.IOException;

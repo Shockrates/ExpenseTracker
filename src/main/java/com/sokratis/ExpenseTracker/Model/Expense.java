@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +36,7 @@ public class Expense{
     private Double expenseAmount;
 
     @Column(name = "expense_date")
+    @PastOrPresent(message = "Expense date cannot be in the future")
     private LocalDate expenseDate;
 
    
@@ -46,7 +48,7 @@ public class Expense{
     private User expenseUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category expenseCategory;
 
     @Column(name = "created_at", nullable = false, updatable = false)

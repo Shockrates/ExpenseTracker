@@ -19,7 +19,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>{
 
     @NonNull
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    List<Expense> findAll();
+    List<Expense> findAllByOrderByExpenseDateDesc();
 
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
     List<Expense> findByExpenseUser(User user);

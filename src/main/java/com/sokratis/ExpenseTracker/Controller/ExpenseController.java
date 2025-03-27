@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Service.ExpenseService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -46,7 +48,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ExpenseDTO>> createExpense(@RequestBody Expense expense) {
+    public ResponseEntity<ApiResponse<ExpenseDTO>> createExpense(@Valid @RequestBody Expense expense) {
         
         try {
             ExpenseDTO createdExpense = expenseService.saveExpense(expense);
@@ -58,7 +60,7 @@ public class ExpenseController {
 
     @PutMapping("/{id}")
     @PreAuthorize("@securityUtils.isOwnerOfExpense(#id)")
-    public ResponseEntity<ApiResponse<ExpenseDTO>> updateExpense(@PathVariable Long id, @RequestBody Expense expense) {
+    public ResponseEntity<ApiResponse<ExpenseDTO>> updateExpense(@PathVariable Long id, @Valid @RequestBody Expense expense) {
         try {
             
             return expenseService.updateExpense(id, expense)
@@ -70,11 +72,12 @@ public class ExpenseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@securityUtils.isOwnerOfExpense(#id)")
     public ResponseEntity<ApiResponse<Void>> deleteExpense(@PathVariable Long id) {
         try {
             expenseService.deleteExpenseById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (RuntimeException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Expense not found with id "+id ));
         }
     }
@@ -89,7 +92,7 @@ public class ExpenseController {
             String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUserName();
             System.out.println(expenses);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
-        } catch (RuntimeException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
         }
     }
@@ -102,7 +105,7 @@ public class ExpenseController {
             String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategoryName();
             System.out.println(expenses);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
-        } catch (RuntimeException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
         }
     }

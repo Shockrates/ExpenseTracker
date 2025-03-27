@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
+import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
@@ -32,7 +32,7 @@ public class ExpenseService implements IExpenseService{
 
     // Retrive all Expenses
     public List<ExpenseDTO> fetchExpenseList(){  
-        return ExpenseMapper.toDTOList(expenseRepository.findAll(Sort.by(Sort.Direction.DESC, "expenseDate")));  
+        return ExpenseMapper.toDTOList(expenseRepository.findAllByOrderByExpenseDateDesc());  
     }
 
     // Retrive all Expenses with Total Amount
@@ -69,11 +69,11 @@ public class ExpenseService implements IExpenseService{
             
             if (updatedExpense.getExpenseUser() != null && userRepository.existsById(updatedExpense.getExpenseUser().getUserId())) {
                 expense.setExpenseUser(updatedExpense.getExpenseUser());
-            } else throw new RuntimeException("User not found");
+            } else throw new ResourceNotFoundException("User not found");
 
             if (updatedExpense.getExpenseCategory() != null && categoryRepository.existsById(updatedExpense.getExpenseCategory().getCategoryId())) {
                 expense.setExpenseCategory(updatedExpense.getExpenseCategory());
-            } else throw new RuntimeException("Category not found");
+            } else throw new ResourceNotFoundException("Category not found");
 
 
             return ExpenseMapper.toDTO(
@@ -86,7 +86,7 @@ public class ExpenseService implements IExpenseService{
         if (expenseRepository.existsById(ExpenseId)) {
             expenseRepository.deleteById(ExpenseId);
         } else {
-            throw new RuntimeException("Expense not found with id: " + ExpenseId);
+            throw new ResourceNotFoundException("Expense not found with id: " + ExpenseId);
         }
     }
 

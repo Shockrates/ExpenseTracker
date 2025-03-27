@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.UserInfoDetails;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
@@ -27,7 +28,7 @@ public class SecurityUtils {
     public boolean isOwnerOfExpense(Long expenseId) {
         Long authenticatedId = getPrincipalId();
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         return expense.getExpenseUser().getUserId().equals(authenticatedId);
     }

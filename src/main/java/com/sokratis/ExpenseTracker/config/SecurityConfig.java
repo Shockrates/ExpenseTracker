@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.sokratis.ExpenseTracker.utils.JwtFilter;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -35,8 +36,9 @@ public class SecurityConfig {
         httpSecurity
             .csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(request -> request
-                    .requestMatchers("/api/users/register", "/api/users/login", "api/expenses", "api/expenses/{id}").permitAll()
+                    .requestMatchers("/api/users/register", "/api/users/login", "api/expenses", "api/expenses/{id:[0-9]+}").permitAll()
                     .requestMatchers("/api/users").hasRole("ADMIN")
+                    //.requestMatchers("/api/users/**").permitAll()
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/v3/api-docs*/**").permitAll()
                     .anyRequest().authenticated()
