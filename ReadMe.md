@@ -123,7 +123,3 @@ mvn spring-boot:run
 
 ## License
 This project is licensed under the MIT License.
-
-## Contact
-For any inquiries or contributions, contact **[Your Name]** at **[Your Email]**.
-
