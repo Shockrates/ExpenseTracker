@@ -22,6 +22,7 @@ import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -42,6 +43,24 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        
+        // Extract token from request
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);  // Remove "Bearer " prefix
+        }
+;
+        if (token != null) {
+            // Invalidate the token
+            userService.logout(token);
+            return ResponseEntity.ok("Logged out successfully");
+        }
+        return ResponseEntity.status(400).body("Invalid token");
     }
 
     @GetMapping

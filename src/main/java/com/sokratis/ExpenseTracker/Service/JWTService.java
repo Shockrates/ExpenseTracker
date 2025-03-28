@@ -5,11 +5,14 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,9 @@ import io.jsonwebtoken.security.Keys;
 public class JWTService {
     
     private String secretkey = "";
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     public JWTService() {
 
@@ -81,6 +87,20 @@ public class JWTService {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public void invalidateToken(String token) {
+        Claims claims = extractAllClaims(token);
+        if (claims != null) {
+            Date expiration = claims.getExpiration();
+            long expirationTime = expiration.getTime() - System.currentTimeMillis();
+            redisTemplate.opsForValue().set("BLACKLISTED_TOKEN_" + token, "true", expirationTime, TimeUnit.MILLISECONDS);
+
+        }
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return redisTemplate.hasKey("BLACKLISTED_TOKEN_" + token);
     }
 
 

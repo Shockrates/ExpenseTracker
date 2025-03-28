@@ -42,11 +42,18 @@ public class JwtFilter extends OncePerRequestFilter {
                 username = jwtService.extractUsername(token);
             }
 
+            // Check if the token is blacklisted (even for non-protected routes)
+            // if ( token != null && jwtService.isTokenBlacklisted(token)) {
+            //     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 401 Unauthorized
+            //     response.getWriter().write("{\"message\":\"Token is blacklisted. Please log in again.\"}");
+            //     return;
+            // }
+
+            
             if (username != null && SecurityContextHolder.getContext().getAuthentication()==null) {
                 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-      
                 if (jwtService.validateToken(token, userDetails )) {
                     UsernamePasswordAuthenticationToken authToken = 
                         new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
@@ -54,8 +61,6 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-
-          
 
             filterChain.doFilter(request, response);
     }

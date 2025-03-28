@@ -45,6 +45,10 @@ public class UserService implements IUserService{
         return "Failed to Login";
     }
 
+    public void logout(String token) {
+        jwtService.invalidateToken(token);
+    }
+
     // Retrive all Users
     public List<UserDTO> fetchUserList(){  
         return UserMapper.toDTOList(userRepository.findAll());  
@@ -112,4 +116,6 @@ public class UserService implements IUserService{
         
         return expenseRepository.getTotalExpensesByUser(UserId);
     }
+
+    
 }
