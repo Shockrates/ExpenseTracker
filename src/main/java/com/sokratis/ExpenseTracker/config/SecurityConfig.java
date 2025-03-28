@@ -39,8 +39,10 @@ public class SecurityConfig {
                     .requestMatchers("/api/users/register", "/api/users/login", "api/expenses", "api/expenses/{id:[0-9]+}").permitAll()
                     .requestMatchers("/api/users").hasRole("ADMIN")
                     //.requestMatchers("/api/users/**").permitAll()
-                    .requestMatchers("/swagger-ui/**").permitAll()
-                    .requestMatchers("/v3/api-docs*/**").permitAll()
+                    .requestMatchers("/swagger-ui/**", 
+                                        "/v3/api-docs/**", 
+                                        "/swagger-ui.html", 
+                                        "/v3/api-docs.yaml").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable())

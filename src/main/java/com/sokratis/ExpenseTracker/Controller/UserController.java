@@ -21,7 +21,7 @@ import com.sokratis.ExpenseTracker.Model.User;
 
 import com.sokratis.ExpenseTracker.Service.UserService;
 
-
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -33,6 +33,7 @@ public class UserController {
 
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Login a user")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody User user){
      
        
@@ -44,12 +45,14 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all User", description = "Fetch a list of all Users")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.fetchUserList());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get User by ID", description = "Fetch a single user by its ID")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<UserDTO>> getUser(@PathVariable Long id){
  
@@ -59,6 +62,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a User", description = "Add a new User to the system")
     public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody User user) {
         
         try {
@@ -70,6 +74,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update existing User", description = "Update a User's details")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<UserDTO>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDto) {
         try {
@@ -83,6 +88,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/password")
+    @Operation(summary = "Update an existing User's Password", description = "Update a User's password")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<Void>> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> request) {
     
@@ -96,6 +102,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user", description = "Remove a user from the system")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
         try {
@@ -107,6 +114,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/total")
+    @Operation(summary = "Get the total of a User", description = "Get the total ammount of all expense made by a single User")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
     public ResponseEntity<ApiResponse<Double>> getUserTotalExpenseAmount(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of user is", userService.calculateTotalbyUser(id)));

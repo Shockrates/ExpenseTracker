@@ -18,6 +18,7 @@ import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Service.CategoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -29,12 +30,14 @@ public class CategoryController {
 
     @Transactional
     @GetMapping
+    @Operation(summary = "Get all Categories", description = "Fetch a list of all Categories")
     public ResponseEntity<ApiResponse<List<CategoryDTO>>> getAllCategories(){
        
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("List of Categories", categoryService.fetchCategoryList()));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get Categroy by ID", description = "Fetch a single Category by its ID")
     public ResponseEntity<ApiResponse<CategoryDTO>> getCategory(@PathVariable Long id){
  
         return categoryService.fetchCategory(id)
@@ -43,6 +46,7 @@ public class CategoryController {
     }
 
     @PostMapping
+    @Operation(summary = "Register a Category", description = "Add a new Category to the system")
     public ResponseEntity<ApiResponse<Category>> createUser(@RequestBody Category category) {
         
         try {
@@ -54,6 +58,7 @@ public class CategoryController {
     }
 
      @PutMapping("/{id}")
+     @Operation(summary = "Update existing Category", description = "Update a Category's details")
     public ResponseEntity<ApiResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody Category category) {
         try {
             
@@ -66,6 +71,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a Category", description = "Remove a Category from the system")
     public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
         try {
             categoryService.deleteCategoryById(id);
@@ -76,12 +82,13 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/total")
+    @Operation(summary = "Get the total of a Category", description = "Get the total ammount of all expenses of a single Category")
     public ResponseEntity<ApiResponse<Double>> getCategoryTotalExpenseAmount(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of category is", categoryService.calculateTotalbyCategory(id)));
     }
 
     @GetMapping("/{id}/expenses")
-    
+    @Operation(summary = "Get Categroy and Expenses by Category ID", description = "Fetch a single Category and all of its related expenses by its ID")
     public ResponseEntity<ApiResponse<CategoryDTO>> getCategoryWithExpenses(@PathVariable Long id){
         System.out.println("All Categories Expenses");
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Total amount of category is", categoryService.fetchCategoryWithExpenses(id)));
