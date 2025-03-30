@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Model.User;
 
 public class UserMapper {
@@ -33,6 +34,15 @@ public class UserMapper {
         User user = modelMapper.map(dto, User.class);
         return user;
     }
+
+    public static User toEntity(UserCreationRequest request) {
+        if (request == null) {
+            return null;
+        }
+        User user = modelMapper.map(request, User.class);
+        return user;
+    }
+
     
     public static List<User> toEntityList(List<UserDTO> dtoList) {
         return dtoList.stream()

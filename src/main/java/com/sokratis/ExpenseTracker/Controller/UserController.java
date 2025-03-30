@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Model.User;
 
 import com.sokratis.ExpenseTracker.Service.UserService;
@@ -82,7 +83,7 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a User", description = "Add a new User to the system")
-    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody User user) {
+    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody UserCreationRequest user) {
         
         try {
             UserDTO createdUser = userService.saveUser(user);

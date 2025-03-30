@@ -1,80 +1,44 @@
 package com.sokratis.ExpenseTracker.Mapper;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public abstract class EntityMapper<E, D> {
+public class EntityMapper {
+    private static final ModelMapper modelMapper = new ModelMapper();
 
-    private final ModelMapper modelMapper;
-
-    public EntityMapper() {
-        this.modelMapper = new ModelMapper();
-    }
-
-    /**
-     * Converts an Entity to its corresponding DTO.
-     * @param entity the Entity object
-     * @return the mapped DTO
-     */
-    public D toDTO(E entity) {
+    // Convert a single entity to a DTO
+    public static <D, E> D toDTO(E entity, Class<D> dtoClass) {
         if (entity == null) {
             return null;
         }
-        return modelMapper.map(entity, getDTOClass());
+        return modelMapper.map(entity, dtoClass);
     }
 
-    /**
-     * Converts a DTO to its corresponding Entity.
-     * @param dto the DTO object
-     * @return the mapped Entity
-     */
-    public E toEntity(D dto) {
+    // Convert a single DTO to an entity
+    public static <D, E> E toEntity(D dto, Class<E> entityClass) {
         if (dto == null) {
             return null;
         }
-        return modelMapper.map(dto, getEntityClass());
+        return modelMapper.map(dto, entityClass);
     }
 
-    /**
-     * Converts a list of Entities to a list of DTOs.
-     * @param enitytlist the list of Entity objects
-     * @return the mapped list of DTOs
-     */
-    public List<D> toDTOList(List<E> enitytlist) {
-        if (enitytlist == null) {
+    // Convert a list of entities to a list of DTOs
+    public static <D, E> List<D> toDTOList(List<E> entityList, Class<D> dtoClass) {
+        if (entityList == null) {
             return null;
         }
-        return enitytlist.stream()
-                    .map(this::toDTO)
-                    .collect(Collectors.toList());
+        Type listType = new TypeToken<List<D>>() {}.getType();
+        return modelMapper.map(entityList, listType);
     }
 
-    /**
-     * Converts a list of DTOs to a list of Entities.
-     * @param dtolist the list of DTO objects
-     * @return the mapped list of Entities
-     */
-    public List<E> toEntityList(List<D> dtolist) {
-        if (dtolist == null) {
+    // Convert a list of DTOs to a list of entities
+    public static <D, E> List<E> toEntityList(List<D> dtoList, Class<E> entityClass) {
+        if (dtoList == null) {
             return null;
         }
-        return dtolist.stream()
-                    .map(this::toEntity)
-                    .collect(Collectors.toList());
+        Type listType = new TypeToken<List<E>>() {}.getType();
+        return modelMapper.map(dtoList, listType);
     }
-
-    /**
-     * Subclasses should implement this method to provide the DTO class type.
-     * @return the DTO class
-     */
-    protected abstract Class<D> getDTOClass();
-
-    /**
-     * Subclasses should implement this method to provide the Entity class type.
-     * @return the Entity class
-     */
-    protected abstract Class<E> getEntityClass();
 }
-
-
