@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
+import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
+import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.User;
@@ -22,11 +24,11 @@ public class ExpenseMapper {
         ExpenseDTO dto = modelMapper.map(expense, ExpenseDTO.class);
         
         if (expense.getExpenseUser() != null) {
-            dto.setUserName(expense.getExpenseUser().getUserName());
+            dto.setUser(UserMapper.toDTO(expense.getExpenseUser()));
         }
         
         if (expense.getExpenseCategory() != null) {
-            dto.setCategoryName(expense.getExpenseCategory().getCategoryName());
+            dto.setCategory(CategoryMapper.toDTO(expense.getExpenseCategory(), CategoryDTO.class));
         }
         
         return dto;
@@ -38,21 +40,21 @@ public class ExpenseMapper {
             .collect(Collectors.toList());
     }
     
-    public static Expense toEntity(ExpenseDTO dto, User user, Category category) {
+    public static Expense toEntity(ExpenseDTO dto) {
         if (dto == null) {
             return null;
         }
         
         Expense expense = modelMapper.map(dto, Expense.class);
-        expense.setExpenseUser(user);
-        expense.setExpenseCategory(category);
+        expense.setExpenseUser(UserMapper.toEntity(dto.getUser()));
+        expense.setExpenseCategory(CategoryMapper.toEntity(dto.getCategory(), Category.class));
         
         return expense;
     }
     
-    public static List<Expense> toEntityList(List<ExpenseDTO> dtoList, User user, Category category) {
+    public static List<Expense> toEntityListWithSameUser(List<ExpenseDTO> dtoList) {
         return dtoList.stream()
-            .map(dto -> toEntity(dto, user, category))
+            .map(dto -> toEntity(dto))
             .collect(Collectors.toList());
     }
 

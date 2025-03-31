@@ -14,8 +14,10 @@ public class ExpenseDTO {
     private Double expenseAmount;
     private LocalDate expenseDate;
     private String expenseDescription;
-    private String categoryName;
-    private String userName;
+    // private String categoryName;
+    // private String userName;
+    private CategoryDTO category;
+    private UserDTO user;
 
 }
 

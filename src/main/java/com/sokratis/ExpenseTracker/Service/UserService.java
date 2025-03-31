@@ -10,9 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
+import com.sokratis.ExpenseTracker.Repository.TokenRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
 import com.sokratis.ExpenseTracker.Service.Interfaces.IUserService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
@@ -27,8 +29,6 @@ public class UserService implements IUserService{
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
 
-    // @Autowired
-    // private JWTService jwtService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -39,7 +39,9 @@ public class UserService implements IUserService{
             new UsernamePasswordAuthenticationToken(user.getUserEmail(), user.getUserPassword())
         );
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUserEmail());
+            String jwtToken = jwtService.generateToken(user.getUserEmail());
+            jwtService.saveToken(jwtToken);
+            return jwtToken;
         }
  
         return "Failed to Login";
@@ -61,7 +63,7 @@ public class UserService implements IUserService{
     }
 
     // Create a new User
-    public UserDTO saveUser(User user) {
+    public UserDTO saveUser(UserCreationRequest user) {
         
         if (user.getUserEmail() == null || user.getUserEmail() == "" ) {
             throw new IllegalArgumentException("Please Enter a valid email");
@@ -70,24 +72,24 @@ public class UserService implements IUserService{
             throw new IllegalArgumentException("Email already exists!");
         }
         
-        // Hash the password
-        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-        return UserMapper.toDTO(userRepository.save(user));
+        User createdUser = UserMapper.toEntity(user);
+        createdUser.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+        return UserMapper.toDTO(userRepository.save(createdUser));
     }
 
     // Update user (except password)
-    public Optional<UserDTO> updateUser(Long id, UserDTO updatedUserDTO) {
+    public Optional<UserDTO> updateUser(Long id, UserCreationRequest updatedUser) {
 
 
         return userRepository.findById(id).map(user -> {
 
             // Check if the new email already exists (excluding current user)
-            Optional<User> existingUserWithEmail = userRepository.findByUserEmail(updatedUserDTO.getUserEmail());
+            Optional<User> existingUserWithEmail = userRepository.findByUserEmail(updatedUser.getUserEmail());
             if (existingUserWithEmail.isPresent() && !existingUserWithEmail.get().getUserId().equals(id)) {
                 throw new IllegalArgumentException("Email is already in use by another user!");
             }
 
-            BeanUtils.copyProperties(updatedUserDTO, user, EntityUtils.getNullPropertyNames(updatedUserDTO));
+            BeanUtils.copyProperties(updatedUser, user, EntityUtils.getNullPropertyNames(updatedUser));
 
             return UserMapper.toDTO(userRepository.save(user));
         });

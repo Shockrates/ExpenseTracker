@@ -27,13 +27,13 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public List<CategoryDTO> fetchCategoryList() {
-        return CategoryMapper.toDTOList( categoryRepository.findAll());
+        return CategoryMapper.toDTOList( categoryRepository.findAll(), CategoryDTO.class);
     }
 
     @Override
     public Optional<CategoryDTO> fetchCategory(Long categoryId) {
         return categoryRepository.findById(categoryId)
-        .map(CategoryMapper::toDTO);
+        .map(category -> CategoryMapper.toDTO(category, CategoryDTO.class));
     }
 
     @Override

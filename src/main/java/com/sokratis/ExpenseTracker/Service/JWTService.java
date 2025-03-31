@@ -1,33 +1,47 @@
 package com.sokratis.ExpenseTracker.Service;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+<<<<<<< HEAD
+=======
 import java.util.concurrent.TimeUnit;
+>>>>>>> eb37d4b47657fb8d09b244b0a22b848f85c35039
 import java.util.function.Function;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+<<<<<<< HEAD
+import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
+=======
+>>>>>>> eb37d4b47657fb8d09b244b0a22b848f85c35039
+import com.sokratis.ExpenseTracker.Model.Token;
+import com.sokratis.ExpenseTracker.Repository.TokenRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class JWTService {
     
     private String secretkey = "";
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private TokenRepository tokenRepository;
 
     public JWTService() {
 
@@ -52,6 +66,23 @@ public class JWTService {
                 .and()
                 .signWith(getSignKey())
                 .compact();
+    }
+
+    public void saveToken(String token) {
+        String email = extractUsername(token);
+        // Find existing token entry
+        Optional<Token> existingToken = tokenRepository.findByUserEmail(email);
+        if (existingToken.isPresent()) {
+            // Update the existing token instead of creating a new one
+            Token tokenEntity = existingToken.get();
+            tokenEntity.setToken(token);
+            tokenEntity.setExpirationTime(extractExpiration(token).toInstant());
+            tokenRepository.save(tokenEntity);
+        } else {
+            // Save new token if no entry exists
+            tokenRepository.save(new Token(token, extractExpiration(token).toInstant(), email));
+        }
+        
     }
 
     private SecretKey getSignKey() {
@@ -84,24 +115,30 @@ public class JWTService {
         return extractExpiration(token).before(new Date());
     }
 
+    // Check if a token exists before validation
+    public boolean isTokenStored(String token) {
+        return tokenRepository.findByToken(token).isPresent();
+    }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public void invalidateToken(String token) {
-        Claims claims = extractAllClaims(token);
-        if (claims != null) {
-            Date expiration = claims.getExpiration();
-            long expirationTime = expiration.getTime() - System.currentTimeMillis();
-            redisTemplate.opsForValue().set("BLACKLISTED_TOKEN_" + token, "true", expirationTime, TimeUnit.MILLISECONDS);
-
-        }
+        //tokenRepository.findByToken(token).ifPresent(tokenRepository::delete);
+        tokenRepository.findByToken(token).ifPresentOrElse(
+            tokenRepository::delete , 
+            () -> { throw new ResourceNotFoundException("Token not found!"); }
+        );
     }
 
-    public boolean isTokenBlacklisted(String token) {
-        return redisTemplate.hasKey("BLACKLISTED_TOKEN_" + token);
+     // Cleanup: Runs every Day to delete expired tokens
+    @Scheduled(fixedRate = 60 * 60 * 24 * 1000) // Every Day
+    public void cleanupExpiredTokens() {
+        tokenRepository.deleteExpiredTokens(Instant.now());
     }
+
 
 
 }

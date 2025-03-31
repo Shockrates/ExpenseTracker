@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Model.User;
 
 
@@ -28,7 +29,7 @@ public interface IUserService {
      * @param User the User to save
      * @return the saved User
      */
-    UserDTO saveUser(User user);
+    UserDTO saveUser(UserCreationRequest user);
 
     /**
      * Updates an existing User entity.
@@ -36,7 +37,7 @@ public interface IUserService {
      * @param UserId the ID of the User to update
      * @return the updated User
      */
-    Optional<UserDTO> updateUser(Long UserId, UserDTO updatedUserDTO);
+    Optional<UserDTO> updateUser(Long UserId, UserCreationRequest updatedUser);
 
 
     /**

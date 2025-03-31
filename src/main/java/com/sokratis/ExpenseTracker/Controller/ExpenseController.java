@@ -98,7 +98,7 @@ public class ExpenseController {
         
         try {
             List<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId);
-            String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUserName();
+            String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUser().getUserName();
             System.out.println(expenses);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
         } catch (ResourceNotFoundException e) {
@@ -112,7 +112,7 @@ public class ExpenseController {
         
         try {
             List<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId);
-            String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategoryName();
+            String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategory().getName();
             System.out.println(expenses);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
         } catch (ResourceNotFoundException e) {

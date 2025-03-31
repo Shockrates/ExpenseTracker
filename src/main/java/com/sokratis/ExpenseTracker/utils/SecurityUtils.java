@@ -1,8 +1,13 @@
 package com.sokratis.ExpenseTracker.utils;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -32,4 +37,15 @@ public class SecurityUtils {
 
         return expense.getExpenseUser().getUserId().equals(authenticatedId);
     }
+
+
+    public Collection<GrantedAuthority> getPrincipalAuthorities(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof UserInfoDetails userDetails) {
+            userDetails.getAuthorities();
+        }
+        throw new AccessDeniedException("Unauthorized access");
+
+    }
+
 }

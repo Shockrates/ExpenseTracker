@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Model.User;
 
 import com.sokratis.ExpenseTracker.Service.UserService;
@@ -82,7 +83,7 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a User", description = "Add a new User to the system")
-    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody User user) {
+    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody UserCreationRequest user) {
         
         try {
             UserDTO createdUser = userService.saveUser(user);
@@ -95,10 +96,10 @@ public class UserController {
     @PutMapping("/{id}")
     @Operation(summary = "Update existing User", description = "Update a User's details")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
-    public ResponseEntity<ApiResponse<UserDTO>> updateUser(@PathVariable Long id, @RequestBody UserDTO userDto) {
+    public ResponseEntity<ApiResponse<UserDTO>> updateUser(@PathVariable Long id, @RequestBody UserCreationRequest user) {
         try {
             
-            return userService.updateUser(id, userDto)
+            return userService.updateUser(id, user)
                     .map(updatedUser -> ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User Updated", updatedUser)))
                     .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("User not found with id "+id )));
         } catch (RuntimeException e) {
