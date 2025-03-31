@@ -7,10 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-<<<<<<< HEAD
-=======
-import java.util.concurrent.TimeUnit;
->>>>>>> eb37d4b47657fb8d09b244b0a22b848f85c35039
 import java.util.function.Function;
 
 import javax.crypto.KeyGenerator;
@@ -21,10 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
-=======
->>>>>>> eb37d4b47657fb8d09b244b0a22b848f85c35039
 import com.sokratis.ExpenseTracker.Model.Token;
 import com.sokratis.ExpenseTracker.Repository.TokenRepository;
 
