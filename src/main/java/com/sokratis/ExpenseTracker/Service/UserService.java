@@ -39,7 +39,7 @@ public class UserService implements IUserService{
             new UsernamePasswordAuthenticationToken(user.getUserEmail(), user.getUserPassword())
         );
         if (authentication.isAuthenticated()) {
-            String jwtToken = jwtService.generateToken(user.getUserEmail());
+            String jwtToken = jwtService.generateToken(user.getUserEmail(), user.getUserRoles());
             jwtService.saveToken(jwtToken);
             return jwtToken;
         }

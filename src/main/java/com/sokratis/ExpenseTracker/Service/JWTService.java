@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -14,6 +15,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -47,9 +49,10 @@ public class JWTService {
         }
     }
 
-     public String generateToken(String email) {
+     public String generateToken(String email, String authorities) {
         Map<String, Object> claims = new HashMap<>();
-
+        claims.put("roles", authorities);
+        
         return Jwts.builder()
                 .claims()
                 .add(claims)

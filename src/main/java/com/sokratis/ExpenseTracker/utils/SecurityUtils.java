@@ -1,6 +1,7 @@
 package com.sokratis.ExpenseTracker.utils;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,15 @@ public class SecurityUtils {
     }
 
 
-    public Collection<GrantedAuthority> getPrincipalAuthorities(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof UserInfoDetails userDetails) {
-            userDetails.getAuthorities();
+    public List<String> getPrincipalAuthorities(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return List.of(); // Return empty list if not authenticated
         }
-        throw new AccessDeniedException("Unauthorized access");
-
-    }
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        }
 
 }
