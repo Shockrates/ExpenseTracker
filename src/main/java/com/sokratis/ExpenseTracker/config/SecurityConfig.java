@@ -44,7 +44,7 @@ public class SecurityConfig {
         httpSecurity
             .csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(request -> request
-                    .requestMatchers("/api/users/register", "/api/users/login", "api/expenses", "api/expenses/{id:[0-9]+}").permitAll()
+                    .requestMatchers("/api/auth/register", "/api/auth/login", "api/expenses", "api/expenses/{id:[0-9]+}").permitAll()
                     .requestMatchers("/api/users").hasRole("ADMIN")
                     //.requestMatchers("/api/users/**").permitAll()
                     .requestMatchers("/swagger-ui/**", 

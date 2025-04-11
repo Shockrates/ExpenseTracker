@@ -2,6 +2,8 @@ package com.sokratis.ExpenseTracker.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,14 +12,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.LoginRequest;
 import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
+import com.sokratis.ExpenseTracker.Model.UserInfoDetails;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 import com.sokratis.ExpenseTracker.Repository.TokenRepository;
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
 import com.sokratis.ExpenseTracker.Service.Interfaces.IUserService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
+import com.sokratis.ExpenseTracker.utils.SecurityUtils;
+
 import lombok.AllArgsConstructor;
 
 @Service
@@ -28,19 +34,30 @@ public class UserService implements IUserService{
     private final ExpenseRepository expenseRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
+    private final SecurityUtils utils;
 
 
     @Autowired
     AuthenticationManager authenticationManager;
 
-    public String verifyUser(User user) {
+    public String verifyUser(LoginRequest user) {
 
+        //Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(user.getUserEmail(), user.getUserPassword())
         );
+
+        //Check if the USer is Authenticated
         if (authentication.isAuthenticated()) {
-            String jwtToken = jwtService.generateToken(user.getUserEmail(), user.getUserRoles());
+            //Extract User Details from authentication
+            UserInfoDetails userDetails = (UserInfoDetails) authentication.getPrincipal();
+            //Extract Roles
+            String roles = userDetails.getAuthoritiesAsString();
+            //Generate the Token
+            String jwtToken = jwtService.generateToken(user.getUserEmail(), roles);
+            //Save token to the DB
             jwtService.saveToken(jwtToken);
+            
             return jwtToken;
         }
  

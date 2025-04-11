@@ -31,6 +31,12 @@ public class UserInfoDetails implements UserDetails{
         return authorities;
     }
 
+    public String getAuthoritiesAsString() {
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+    }
+
 
     public Long getId() {
         return id;

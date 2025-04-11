@@ -34,35 +34,35 @@ public class UserController {
     private final UserService userService;
 
 
-    @PostMapping("/login")
-    @Operation(summary = "Login", description = "Login a user")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody User user){
+//     @PostMapping("/login")
+//     @Operation(summary = "Login", description = "Login a user")
+//     public ResponseEntity<ApiResponse<String>> login(@RequestBody User user){
      
        
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User Logged In", userService.verifyUser(user))) ;
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
-        }
-    }
+//         try {
+//             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User Logged In", userService.verifyUser(user))) ;
+//         } catch (RuntimeException e) {
+//             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
+//         }
+//     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+//     @PostMapping("/logout")
+//     public ResponseEntity<String> logout(HttpServletRequest request) {
         
-        // Extract token from request
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);  // Remove "Bearer " prefix
-        }
-;
-        if (token != null) {
-            // Invalidate the token
-            userService.logout(token);
-            return ResponseEntity.ok("Logged out successfully");
-        }
-        return ResponseEntity.status(400).body("Invalid token");
-    }
+//         // Extract token from request
+//         String authHeader = request.getHeader("Authorization");
+//         String token = null;
+//         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//             token = authHeader.substring(7);  // Remove "Bearer " prefix
+//         }
+// ;
+//         if (token != null) {
+//             // Invalidate the token
+//             userService.logout(token);
+//             return ResponseEntity.ok("Logged out successfully");
+//         }
+//         return ResponseEntity.status(400).body("Invalid token");
+//     }
 
     @GetMapping
     @Operation(summary = "Get all User", description = "Fetch a list of all Users")
@@ -81,17 +81,17 @@ public class UserController {
         .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("User not found with id "+id )));
     }
 
-    @PostMapping("/register")
-    @Operation(summary = "Register a User", description = "Add a new User to the system")
-    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody UserCreationRequest user) {
+    // @PostMapping("/register")
+    // @Operation(summary = "Register a User", description = "Add a new User to the system")
+    // public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody UserCreationRequest user) {
         
-        try {
-            UserDTO createdUser = userService.saveUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User Created", createdUser));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
-        }
-    }
+    //     try {
+    //         UserDTO createdUser = userService.saveUser(user);
+    //         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User Created", createdUser));
+    //     } catch (RuntimeException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+    //     }
+    // }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update existing User", description = "Update a User's details")

@@ -49,6 +49,6 @@ public class SecurityUtils {
         return authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        }
+    }
 
 }
