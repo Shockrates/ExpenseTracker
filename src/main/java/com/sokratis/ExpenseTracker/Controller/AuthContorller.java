@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.LoginRequest;
+import com.sokratis.ExpenseTracker.DTO.LoginResponse;
 import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
@@ -27,7 +28,7 @@ public class AuthContorller {
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Login a user")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest user){
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest user){
      
        
         try {

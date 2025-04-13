@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.DTO.LoginRequest;
+import com.sokratis.ExpenseTracker.DTO.LoginResponse;
 import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
@@ -40,7 +41,7 @@ public class UserService implements IUserService{
     @Autowired
     AuthenticationManager authenticationManager;
 
-    public String verifyUser(LoginRequest user) {
+    public LoginResponse verifyUser(LoginRequest user) {
 
         //Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
@@ -58,10 +59,10 @@ public class UserService implements IUserService{
             //Save token to the DB
             jwtService.saveToken(jwtToken);
             
-            return jwtToken;
+            return new LoginResponse(userDetails.getId(), userDetails.getUsername(), jwtToken);
         }
  
-        return "Failed to Login";
+        throw new RuntimeException("Failed to Login!");
     }
 
     public void logout(String token) {

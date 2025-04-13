@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
 import com.sokratis.ExpenseTracker.DTO.UserDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
@@ -51,6 +52,17 @@ public class ExpenseMapper {
         
         return expense;
     }
+
+    public static Expense toEntity(ExpenseRequest request) {
+        if (request== null) {
+            return null;
+        }
+        
+        Expense expense = modelMapper.map(request, Expense.class);
+        return expense;
+    }
+
+
     
     public static List<Expense> toEntityListWithSameUser(List<ExpenseDTO> dtoList) {
         return dtoList.stream()

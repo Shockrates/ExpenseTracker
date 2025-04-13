@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
@@ -47,13 +48,13 @@ public class ExpenseService implements IExpenseService{
     }
 
      // Create a new expense
-    public ExpenseDTO saveExpense(Expense expense) {
+    public ExpenseDTO saveExpense(ExpenseRequest expenseRequest) {
         
-        User user = userRepository.findById(expense.getExpenseUser().getUserId())
+        User user = userRepository.findById(expenseRequest.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Category category = categoryRepository.findById(expense.getExpenseCategory().getCategoryId())
+        Category category = categoryRepository.findById(expenseRequest.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-
+        Expense expense =  ExpenseMapper.toEntity(expenseRequest);
         expense.setExpenseUser(user);
         expense.setExpenseCategory(category);
 

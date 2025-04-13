@@ -9,11 +9,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,19 +34,16 @@ public class GlobalExceptionHandler {
         return buildResponse(ex.getMessage(),"Resource Not Found", HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex){ 
+        System.out.println("Logging");
+        return buildResponse(ex.getMessage(),"Illegal Argument", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
         String message = "You do not have permission to perform this action.";
         return buildResponse(  message,"Access Denied", HttpStatus.FORBIDDEN);
-    }
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<Map<String, Object>> handleExpiredJwtException(ExpiredJwtException ex) {
-        return buildResponse("JWT token has expired","Invalid Token", HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<Map<String, Object>> handleMalformedJwtException(MalformedJwtException ex) {
-        return buildResponse("Invalid JWT token format","Invalid Token", HttpStatus.BAD_REQUEST);
     }
 
 

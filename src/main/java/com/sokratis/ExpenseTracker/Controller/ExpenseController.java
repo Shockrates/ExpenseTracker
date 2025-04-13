@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Service.ExpenseService;
@@ -54,40 +55,32 @@ public class ExpenseController {
 
     @PostMapping
     @Operation(summary = "Create a new expense", description = "Add a new expense to the system")
-    public ResponseEntity<ApiResponse<ExpenseDTO>> createExpense(@Valid @RequestBody Expense expense) {
-        
-        try {
-            ExpenseDTO createdExpense = expenseService.saveExpense(expense);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Expense Created", createdExpense));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
-        }
+    public ResponseEntity<ApiResponse<ExpenseDTO>> createExpense(@Valid @RequestBody ExpenseRequest expense) {
+
+        ExpenseDTO createdExpense = expenseService.saveExpense(expense);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Expense Created", createdExpense));
+
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing expense", description = "Update a expense's details")
     @PreAuthorize("@securityUtils.isOwnerOfExpense(#id)")
     public ResponseEntity<ApiResponse<ExpenseDTO>> updateExpense(@PathVariable Long id, @Valid @RequestBody Expense expense) {
-        try {
-            
-            return expenseService.updateExpense(id, expense)
-                    .map(updatedExpense -> ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Expense Updated", updatedExpense)))
-                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Expense not found with id "+id )));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
-        }
+    
+        return expenseService.updateExpense(id, expense)
+                .map(updatedExpense -> ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Expense Updated", updatedExpense)))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Expense not found with id "+id )));
+      
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a expense", description = "Remove a expense from the system")
     @PreAuthorize("@securityUtils.isOwnerOfExpense(#id)")
     public ResponseEntity<ApiResponse<Void>> deleteExpense(@PathVariable Long id) {
-        try {
-            expenseService.deleteExpenseById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Expense not found with id "+id ));
-        }
+       
+        expenseService.deleteExpenseById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+       
     }
 
     //CUSTOM ENDPOINTS
@@ -96,28 +89,22 @@ public class ExpenseController {
     @Operation(summary = "Get all Expenses by User", description = "Fetch a list of all Expenses made by a specific User ")
     public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByUser(@PathVariable Long userId){
         
-        try {
-            List<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId);
-            String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUser().getUserName();
-            System.out.println(expenses);
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
-        }
+        List<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId);
+        String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUser().getUserName();
+        System.out.println(expenses);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+      
     }
 
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "Get all Expenses by Category", description = "Fetch a list of all Expenses of specific category ")
     public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByCategory(@PathVariable Long categoryId){
         
-        try {
-            List<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId);
-            String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategory().getName();
-            System.out.println(expenses);
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
-        }
+        List<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId);
+        String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategory().getName();
+        System.out.println(expenses);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+      
     }
 
     @GetMapping("/between-dates")

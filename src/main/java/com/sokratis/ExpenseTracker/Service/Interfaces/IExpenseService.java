@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
 import com.sokratis.ExpenseTracker.Model.Expense;
 
 public interface IExpenseService {
@@ -28,7 +29,7 @@ public interface IExpenseService {
      * @param Expense the Expense to save
      * @return the saved Expense
      */
-    ExpenseDTO saveExpense(Expense expense);
+    ExpenseDTO saveExpense(ExpenseRequest expense);
 
     /**
      * Updates an existing Expense entity.
