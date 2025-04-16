@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseRequest {
+public class ExpenseCreationRequest {
 
     private Long expenseId;
     private Double expenseAmount;

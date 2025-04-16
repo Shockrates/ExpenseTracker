@@ -16,8 +16,8 @@ public class ExpenseDTO {
     private String expenseDescription;
     // private String categoryName;
     // private String userName;
-    private CategoryDTO category;
-    private UserDTO user;
+    private CategoryDTO expenseCategory;
+    private UserDTO expenseUser;
 
 }
 

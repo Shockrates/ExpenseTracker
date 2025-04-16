@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 
 import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
-import com.sokratis.ExpenseTracker.Model.User;
+
 
 public class ExpenseMapper {
     private static final ModelMapper modelMapper = new ModelMapper();
@@ -25,11 +25,11 @@ public class ExpenseMapper {
         ExpenseDTO dto = modelMapper.map(expense, ExpenseDTO.class);
         
         if (expense.getExpenseUser() != null) {
-            dto.setUser(UserMapper.toDTO(expense.getExpenseUser()));
+            dto.setExpenseUser(UserMapper.toDTO(expense.getExpenseUser()));
         }
         
         if (expense.getExpenseCategory() != null) {
-            dto.setCategory(CategoryMapper.toDTO(expense.getExpenseCategory(), CategoryDTO.class));
+            dto.setExpenseCategory(CategoryMapper.toDTO(expense.getExpenseCategory(), CategoryDTO.class));
         }
         
         return dto;
@@ -47,13 +47,13 @@ public class ExpenseMapper {
         }
         
         Expense expense = modelMapper.map(dto, Expense.class);
-        expense.setExpenseUser(UserMapper.toEntity(dto.getUser()));
-        expense.setExpenseCategory(CategoryMapper.toEntity(dto.getCategory(), Category.class));
+        expense.setExpenseUser(UserMapper.toEntity(dto.getExpenseUser()));
+        expense.setExpenseCategory(CategoryMapper.toEntity(dto.getExpenseCategory(), Category.class));
         
         return expense;
     }
 
-    public static Expense toEntity(ExpenseRequest request) {
+    public static Expense toEntity(ExpenseCreationRequest request) {
         if (request== null) {
             return null;
         }
@@ -80,4 +80,10 @@ public class ExpenseMapper {
         return new ExpenseListDTO(expenseDTOs, totalAmount);
 
     }
+
+    public static Page<ExpenseDTO> toExpenseDTOPage(Page<Expense> expenses) {
+        return expenses.map(expense -> modelMapper.map(expense, ExpenseDTO.class));
+    }
+
+    
 }

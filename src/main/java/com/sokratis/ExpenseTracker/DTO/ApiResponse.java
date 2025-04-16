@@ -29,7 +29,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(message, null);
     }
 
-    public ResponseEntity<HttpResponse> success(T data, String message, HttpStatus status){
+    public static <T>ResponseEntity<HttpResponse> success(T data, String message, HttpStatus status){
         return ResponseEntity.status(status).body(
             HttpResponse.builder()
             .timeStamp(Instant.now().toString())

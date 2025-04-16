@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
+import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
@@ -32,8 +34,8 @@ public class ExpenseService implements IExpenseService{
     private final CategoryRepository categoryRepository;
 
     // Retrive all Expenses
-    public List<ExpenseDTO> fetchExpenseList(){  
-        return ExpenseMapper.toDTOList(expenseRepository.findAllByOrderByExpenseDateDesc());  
+    public Page<ExpenseDTO> fetchExpenseList(int page, int size){  
+        return ExpenseMapper.toExpenseDTOPage(expenseRepository.findAllByOrderByExpenseDateDesc(PageRequest.of(page, size)));  
     }
 
     // Retrive all Expenses with Total Amount
@@ -48,7 +50,7 @@ public class ExpenseService implements IExpenseService{
     }
 
      // Create a new expense
-    public ExpenseDTO saveExpense(ExpenseRequest expenseRequest) {
+    public ExpenseDTO saveExpense(ExpenseCreationRequest expenseRequest) {
         
         User user = userRepository.findById(expenseRequest.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -91,28 +93,28 @@ public class ExpenseService implements IExpenseService{
         }
     }
 
-    public List<ExpenseDTO> fetchExpensesByUser(Long userId) {
+    public Page<ExpenseDTO> fetchExpensesByUser(Long userId, int page, int size) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     
-        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseUser(user)); 
+        return ExpenseMapper.toExpenseDTOPage(expenseRepository.findByExpenseUser(user,PageRequest.of(page, size))); 
     }
 
-    public List<ExpenseDTO> fetchExpensesByCategory(Long categoryId) {
+    public Page<ExpenseDTO> fetchExpensesByCategory(Long categoryId, int page, int size) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category)); 
+        return ExpenseMapper.toExpenseDTOPage(expenseRepository.findByExpenseCategory(category,PageRequest.of(page, size))); 
     }
 
-    public List<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate) {
+    public Page<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate, int page, int size) {
 
-        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseDateBetween(startDate, endDate)); 
+        return ExpenseMapper.toExpenseDTOPage(expenseRepository.findByExpenseDateBetween(startDate, endDate, PageRequest.of(page, size))); 
     }
 
    
-    public List<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highestAmount) {
-        return ExpenseMapper.toDTOList(expenseRepository.findByExpenseAmountBetween(lowestAmount, highestAmount));
+    public Page<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highestAmount, int page, int size) {
+        return ExpenseMapper.toExpenseDTOPage(expenseRepository.findByExpenseAmountBetween(lowestAmount, highestAmount, PageRequest.of(page, size)));
     }
 
     @Override
