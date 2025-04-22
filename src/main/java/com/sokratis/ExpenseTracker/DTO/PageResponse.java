@@ -18,6 +18,7 @@ public class PageResponse<T> {
     private int pageSize;
     private long totalElements;
     private int totalPages;
+    private int numberOfElements;
     private boolean last;
 
     public PageResponse(Page<T> page){
@@ -26,6 +27,7 @@ public class PageResponse<T> {
        this.pageSize = page.getSize();
        this.totalElements = page.getTotalElements();
        this.totalPages = page.getTotalPages();
+       this.numberOfElements = page.getNumberOfElements();
        this.last = page.isLast();
     }
 }

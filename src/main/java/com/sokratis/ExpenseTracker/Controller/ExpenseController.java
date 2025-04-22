@@ -2,6 +2,7 @@ package com.sokratis.ExpenseTracker.Controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.jaxb.PageAdapter;
@@ -41,6 +42,7 @@ public class ExpenseController {
     
     private final ExpenseService expenseService;
 
+   
     @GetMapping
     @Operation(summary = "Get all Expenses", description = "Fetch a list of all Expenses")
     public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getAllExpenses(
@@ -48,6 +50,14 @@ public class ExpenseController {
         @RequestParam(defaultValue = "50") int size
     ){
         System.out.println("FIND ALL");
+
+        // try {
+        //     TimeUnit.SECONDS.sleep(3);
+        // } catch (InterruptedException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
+        // }
+
         return ResponseEntity.status(HttpStatus.OK)
             .body(ApiResponse.success(
                 "Expense List", 
