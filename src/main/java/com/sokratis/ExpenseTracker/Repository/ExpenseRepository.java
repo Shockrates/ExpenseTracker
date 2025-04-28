@@ -3,6 +3,8 @@ package com.sokratis.ExpenseTracker.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,19 +21,22 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>{
 
     @NonNull
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    List<Expense> findAllByOrderByExpenseDateDesc();
+    Page<Expense> findAllByOrderByExpenseDateDesc( Pageable pageable);
 
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    List<Expense> findByExpenseUser(User user);
+    Page<Expense> findByExpenseUser(User user, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
+    Page<Expense> findByExpenseCategory(Category category,Pageable pageable);
 
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
     List<Expense> findByExpenseCategory(Category category);
 
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    List<Expense> findByExpenseDateBetween(LocalDate startDate, LocalDate endDate);
+    Page<Expense> findByExpenseDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    List<Expense> findByExpenseAmountBetween(Double lowestAmount, Double highestAmount);
+    Page<Expense> findByExpenseAmountBetween(Double lowestAmount, Double highestAmount, Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e")
     Double getTotalExpenseAmount();
@@ -41,4 +46,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>{
 
     @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e WHERE e.expenseCategory.id = :categoryId")
     Double getTotalExpensesByCategory(@Param("categoryId") Long categoryId);
+    
 }

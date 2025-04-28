@@ -3,8 +3,11 @@ package com.sokratis.ExpenseTracker.Service.Interfaces;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
+import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
 import com.sokratis.ExpenseTracker.Model.Expense;
 
 public interface IExpenseService {
@@ -15,7 +18,7 @@ public interface IExpenseService {
      * Fetches the list of all Expense entities.
      * @return a list of Expenses
      */
-    List<ExpenseDTO> fetchExpenseList();
+    Page<ExpenseDTO> fetchExpenseList(int page, int size);
 
      /**
      * Fetches an Expense entity.
@@ -29,7 +32,7 @@ public interface IExpenseService {
      * @param Expense the Expense to save
      * @return the saved Expense
      */
-    ExpenseDTO saveExpense(ExpenseRequest expense);
+    ExpenseDTO saveExpense(ExpenseCreationRequest expense);
 
     /**
      * Updates an existing Expense entity.
@@ -50,14 +53,14 @@ public interface IExpenseService {
      * @param User the User of the Expense to fetch
      * @return the requested Expense List
      */
-    public List<ExpenseDTO> fetchExpensesByUser(Long userId);
+    public Page<ExpenseDTO> fetchExpensesByUser(Long userId, int page, int size);
 
     /**
      * Fetches the list of all Expense entities of a single Category.
      * @param category the Category of the Expense to fetch
      * @return the requested Expense List
      */
-    public List<ExpenseDTO> fetchExpensesByCategory(Long categoryId);
+    public Page<ExpenseDTO> fetchExpensesByCategory(Long categoryId, int page, int size);
 
 
     /**
@@ -66,7 +69,7 @@ public interface IExpenseService {
      * @param  endDate the end date
      * @return the requested Expense List
      */
-    public List<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate);
+    public Page<ExpenseDTO> fetchExpensesBetweenDates(LocalDate startDate, LocalDate endDate, int page, int size);
 
      /**
      * Fetches the list of all Expense entities made with amounts between two ranges.
@@ -74,7 +77,7 @@ public interface IExpenseService {
      * @param  highestAmount the highest amount exense
      * @return the requested Expense List
      */
-    public List<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highest);
+    public Page<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highest, int page, int size);
 
 
     /**

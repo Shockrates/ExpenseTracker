@@ -2,6 +2,10 @@ package com.sokratis.ExpenseTracker.Controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.jaxb.PageAdapter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseRequest;
+import com.sokratis.ExpenseTracker.DTO.PageResponse;
+import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Service.ExpenseService;
@@ -37,11 +42,28 @@ public class ExpenseController {
     
     private final ExpenseService expenseService;
 
+   
     @GetMapping
     @Operation(summary = "Get all Expenses", description = "Fetch a list of all Expenses")
-    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getAllExpenses(){
+    public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getAllExpenses(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "50") int size
+    ){
         System.out.println("FIND ALL");
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Expense List", expenseService.fetchExpenseList()) );
+
+        // try {
+        //     TimeUnit.SECONDS.sleep(3);
+        // } catch (InterruptedException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
+        // }
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(
+                "Expense List", 
+                //expenseService.fetchExpenseList(page, size))
+                new PageResponse<ExpenseDTO>(expenseService.fetchExpenseList(page, size))) 
+            );
     }
 
     @GetMapping("/{id}")
@@ -55,7 +77,7 @@ public class ExpenseController {
 
     @PostMapping
     @Operation(summary = "Create a new expense", description = "Add a new expense to the system")
-    public ResponseEntity<ApiResponse<ExpenseDTO>> createExpense(@Valid @RequestBody ExpenseRequest expense) {
+    public ResponseEntity<ApiResponse<ExpenseDTO>> createExpense(@Valid @RequestBody ExpenseCreationRequest expense) {
 
         ExpenseDTO createdExpense = expenseService.saveExpense(expense);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Expense Created", createdExpense));
@@ -87,45 +109,76 @@ public class ExpenseController {
 
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get all Expenses by User", description = "Fetch a list of all Expenses made by a specific User ")
-    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByUser(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getExpensesByUser(
+        @PathVariable Long userId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "50") int size
+    ){
         
-        List<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId);
-        String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.get(0).getUser().getUserName();
+        Page<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId,page, size);
+        String message = expenses.isEmpty() ? "No Expenses for this User" : "List of Expenses by User " + expenses.getContent().get(0).getExpenseUser().getUserName();
         System.out.println(expenses);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(
+                message, 
+                new PageResponse<ExpenseDTO>(expenses))
+            );
       
     }
 
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "Get all Expenses by Category", description = "Fetch a list of all Expenses of specific category ")
-    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesByCategory(@PathVariable Long categoryId){
+    public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getExpensesByCategory(
+        @PathVariable Long categoryId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "50") int size
+    ){
         
-        List<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId);
-        String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.get(0).getCategory().getName();
+        Page<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId, page, size);
+        String message = expenses.isEmpty() ? "No Expenses for this Category" : "List of Expenses by Category "+ expenses.getContent().get(0).getExpenseCategory().getName();
         System.out.println(expenses);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(
+                message, 
+                new PageResponse<ExpenseDTO>(expenses))
+            );
       
     }
 
     @GetMapping("/between-dates")
     @Operation(summary = "Get all Expenses between two dates", description = "Fetch a list of all Expenses between two dates")
-    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesBetweenDates(
+    public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getExpensesBetweenDates(
         @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
-        @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate
-    ) {
-        List<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenDates(startDate, endDate);
+        @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "50") int size
+    ){
+        Page<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenDates(startDate, endDate, page, size);
         String message = expenses.isEmpty() ? "No Expenses for this Time Range" : "List of Expenses between "+ startDate + " and " + endDate;
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(
+                message, 
+                new PageResponse<ExpenseDTO>(expenses))
+            );
     }
 
     @GetMapping("/between-ranges")
     @Operation(summary = "Get all Expenses between two price ranges", description = "Fetch a list of all Expenses between two price ranges")
-    public ResponseEntity<ApiResponse<List<ExpenseDTO>>> getExpensesBetweenRanges(@RequestParam Double lowestAmount, @RequestParam Double highestAmount) {
+    public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getExpensesBetweenRanges(
+        @RequestParam Double lowestAmount, 
+        @RequestParam Double highestAmount,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "50") int size
+    ) {
 
-        List<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenRanges(lowestAmount, highestAmount);
+        Page<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenRanges(lowestAmount, highestAmount, page, size);
         String message = expenses.isEmpty() ? "No Expenses for this price Range" : "List of Expenses between "+ lowestAmount + " and " + highestAmount;
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(message, expenses));
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(
+                message, 
+                new PageResponse<ExpenseDTO>(expenses))
+            );
     }
 
     @GetMapping("/total")

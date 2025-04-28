@@ -1,8 +1,10 @@
 package com.sokratis.ExpenseTracker.Model;
 
+import java.time.Instant;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -22,5 +24,28 @@ public class HttpResponse {
     protected HttpStatus status;
     protected String message;
     protected Map<?,?> data;
+
+    public HttpResponse(Map<?,?> data, String message, HttpStatus status){
+        this.timeStamp = Instant.now().toString();
+        this.message = message;
+        this.data = data;
+        this.status=status;
+        this.statusCode = status.value();
+    }
+
+    public ResponseEntity<HttpResponse> success(){
+        return ResponseEntity.status(status).body(
+            HttpResponse.builder()
+            .timeStamp(Instant.now().toString())
+            .data(Map.of("data", data))
+            .message(message)
+            .status(status)
+            .statusCode(status.value())
+            .build()
+        );
+
+    }
     
 }
+
+
