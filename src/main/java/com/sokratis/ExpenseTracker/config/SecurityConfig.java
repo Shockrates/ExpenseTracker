@@ -36,32 +36,31 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
-            .csrf(customizer -> customizer.disable())
-            .authorizeHttpRequests(request -> request
-                    .requestMatchers("/api/auth/register", "/api/auth/login", "api/expenses", "api/expenses/{id:[0-9]+}").permitAll()
-                    .requestMatchers("/api/users").hasRole("ADMIN")
-                    //.requestMatchers("/api/users/**").permitAll()
-                    .requestMatchers("/swagger-ui/**", 
-                                        "/v3/api-docs/**", 
-                                        "/swagger-ui.html", 
-                                        "/v3/api-docs.yaml").permitAll()
-                    .anyRequest().permitAll()
-            )
-            .formLogin(form -> form.disable())
-            .httpBasic(Customizer.withDefaults())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .logout(logout -> logout
-                .logoutUrl("/api/users/logout") // Logout endpoint
-                .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) ->
-                    response.setStatus(HttpServletResponse.SC_OK))
-            );
-
-
+                .csrf(customizer -> customizer.disable())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/auth/register", "/api/auth/login",
+                                "/api/expenses/{id:[0-9]+}")
+                        .permitAll()
+                        .requestMatchers("/api/users").hasRole("ADMIN")
+                        // .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs.yaml")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(form -> form.disable())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout
+                        .logoutUrl("/api/users/logout") // Logout endpoint
+                        .addLogoutHandler(logoutHandler)
+                        .logoutSuccessHandler(
+                                (request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK)));
 
         return httpSecurity.build();
     }
@@ -72,15 +71,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder() );
+        provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

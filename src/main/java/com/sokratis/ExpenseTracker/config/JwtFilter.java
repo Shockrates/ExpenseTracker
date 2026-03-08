@@ -1,6 +1,5 @@
 package com.sokratis.ExpenseTracker.config;
 
-
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,60 +37,66 @@ public class JwtFilter extends OncePerRequestFilter {
         this.utils = utils;
     }
 
-    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-                
-            String authHeader = request.getHeader("Authorization");
-            String token = null;
-            String username = null;
 
-            try {
+        String authHeader = request.getHeader("Authorization");
+        // System.out.println("AUTH HEADER: " + authHeader);
+        String token = null;
+        String username = null;
 
-                String requestPath = request.getRequestURI();
-                if (requestPath.equals("/api/auth/login") || requestPath.equals("/api/auth/register")) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-                
-                if (authHeader !=null && authHeader.startsWith("Bearer ")) {
-                    token = authHeader.substring(7);
-                    username = jwtService.extractUsername(token);
-                }
-                
-                if (username != null && SecurityContextHolder.getContext().getAuthentication()==null) {
-                    
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    
-                    if (jwtService.validateToken(token, userDetails ) && jwtService.isTokenStored(token)) {
-                        UsernamePasswordAuthenticationToken authToken = 
-                            new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    }
-                }
-    
+        try {
+
+            String requestPath = request.getRequestURI();
+            if (requestPath.equals("/api/auth/login") || requestPath.equals("/api/auth/register")) {
                 filterChain.doFilter(request, response);
-                
-            }catch (ExpiredJwtException e) {
-                utils.handleJwtException(response, "JWT token has expired", "Token Expired", HttpStatus.UNAUTHORIZED);
-                return;
-            } catch (SignatureException e) {
-                utils.handleJwtException(response, "Invalid token signature", "Invalid Signature", HttpStatus.UNAUTHORIZED);
-                return;
-            } catch (MalformedJwtException e) {
-                utils.handleJwtException(response, "Malformed JWT token", "Malformed Token", HttpStatus.BAD_REQUEST);
-                return;
-            } catch (UnsupportedJwtException e) {
-                utils.handleJwtException(response, "Unsupported JWT token", "Unsupported Token", HttpStatus.BAD_REQUEST);
-                return;
-            } catch (IllegalArgumentException e) {
-                utils.handleJwtException(response, "JWT token is missing or empty", "Invalid Token", HttpStatus.BAD_REQUEST);
                 return;
             }
 
-            
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                // System.out.println("TOKEN: " + token);
+                username = jwtService.extractUsername(token);
+                // System.out.println("USERNAME: " + username);
+            }
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // System.out.println("LOADING USER: " + username);
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                // System.out.println("TOKEN VALID: " + jwtService.validateToken(token,
+                // userDetails));
+                // System.out.println("TOKEN STORED: " + jwtService.isTokenStored(token));
+
+                if (jwtService.validateToken(token, userDetails) && jwtService.isTokenStored(token)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                            null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            utils.handleJwtException(response, "JWT token has expired", "Token Expired", HttpStatus.UNAUTHORIZED);
+            return;
+        } catch (SignatureException e) {
+            utils.handleJwtException(response, "Invalid token signature", "Invalid Signature", HttpStatus.UNAUTHORIZED);
+            return;
+        } catch (MalformedJwtException e) {
+            utils.handleJwtException(response, "Malformed JWT token", "Malformed Token", HttpStatus.BAD_REQUEST);
+            return;
+        } catch (UnsupportedJwtException e) {
+            utils.handleJwtException(response, "Unsupported JWT token", "Unsupported Token", HttpStatus.BAD_REQUEST);
+            return;
+        } catch (IllegalArgumentException e) {
+            utils.handleJwtException(response, "JWT token is missing or empty", "Invalid Token",
+                    HttpStatus.BAD_REQUEST);
+            return;
+        }
+
     }
 
 }

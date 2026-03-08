@@ -8,17 +8,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserInfoDetails implements UserDetails{
+public class UserInfoDetails implements UserDetails {
 
     private Long id;
     private String username; // Changed from 'name' to 'email' for clarity
     private String password;
+    private String displayName;
     private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(User userInfo) {
         this.id = userInfo.getUserId();
         this.username = userInfo.getUserEmail(); // Use email as username
         this.password = userInfo.getUserPassword();
+        this.displayName = userInfo.getUserName();
         this.authorities = List.of(userInfo.getUserRoles().split(","))
                 .stream()
                 .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
@@ -37,7 +39,6 @@ public class UserInfoDetails implements UserDetails{
                 .collect(Collectors.joining(","));
     }
 
-
     public Long getId() {
         return id;
     }
@@ -50,6 +51,10 @@ public class UserInfoDetails implements UserDetails{
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     @Override
@@ -72,9 +77,4 @@ public class UserInfoDetails implements UserDetails{
         return true;
     }
 
-    
-
-    
-
-    
 }

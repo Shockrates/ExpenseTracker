@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class UserService implements IUserService{
+public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final ExpenseRepository expenseRepository;
@@ -37,31 +37,30 @@ public class UserService implements IUserService{
     private final JWTService jwtService;
     private final SecurityUtils utils;
 
-
     @Autowired
     AuthenticationManager authenticationManager;
 
     public LoginResponse verifyUser(LoginRequest user) {
 
-        //Authenticate the user
+        // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(user.getUserEmail(), user.getUserPassword())
-        );
+                new UsernamePasswordAuthenticationToken(user.getUserEmail(), user.getUserPassword()));
 
-        //Check if the USer is Authenticated
+        // Check if the USer is Authenticated
         if (authentication.isAuthenticated()) {
-            //Extract User Details from authentication
+            // Extract User Details from authentication
             UserInfoDetails userDetails = (UserInfoDetails) authentication.getPrincipal();
-            //Extract Roles
+            // Extract Roles
             String roles = userDetails.getAuthoritiesAsString();
-            //Generate the Token
+            // Generate the Token
             String jwtToken = jwtService.generateToken(user.getUserEmail(), roles);
-            //Save token to the DB
+            // Save token to the DB
             jwtService.saveToken(jwtToken);
-            
-            return new LoginResponse(userDetails.getId(), userDetails.getUsername(), jwtToken);
+
+            return new LoginResponse(userDetails.getId(), userDetails.getUsername(), userDetails.getDisplayName(),
+                    jwtToken);
         }
- 
+
         throw new RuntimeException("Failed to Login!");
     }
 
@@ -70,26 +69,26 @@ public class UserService implements IUserService{
     }
 
     // Retrive all Users
-    public List<UserDTO> fetchUserList(){  
-        return UserMapper.toDTOList(userRepository.findAll());  
+    public List<UserDTO> fetchUserList() {
+        return UserMapper.toDTOList(userRepository.findAll());
     }
 
     // Retrieve an User by ID
-    public Optional<UserDTO> fetchUser(Long UserId ){
+    public Optional<UserDTO> fetchUser(Long UserId) {
         return userRepository.findById(UserId)
-        .map(UserMapper::toDTO);
+                .map(UserMapper::toDTO);
     }
 
     // Create a new User
     public UserDTO saveUser(UserCreationRequest user) {
-        
-        if (user.getUserEmail() == null || user.getUserEmail() == "" ) {
+
+        if (user.getUserEmail() == null || user.getUserEmail() == "") {
             throw new IllegalArgumentException("Please Enter a valid email");
         }
         if (userRepository.findByUserEmail(user.getUserEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists!");
         }
-        
+
         User createdUser = UserMapper.toEntity(user);
         createdUser.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         return UserMapper.toDTO(userRepository.save(createdUser));
@@ -97,7 +96,6 @@ public class UserService implements IUserService{
 
     // Update user (except password)
     public Optional<UserDTO> updateUser(Long id, UserCreationRequest updatedUser) {
-
 
         return userRepository.findById(id).map(user -> {
 
@@ -133,9 +131,8 @@ public class UserService implements IUserService{
 
     @Override
     public Double calculateTotalbyUser(Long UserId) {
-        
+
         return expenseRepository.getTotalExpensesByUser(UserId);
     }
 
-    
 }

@@ -32,8 +32,8 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class JWTService {
-    
-    private String secretkey = "";
+
+    private String secretkey = "myverysecuresecretkeymyverysecuresecretkey255";
 
     @Autowired
     private TokenRepository tokenRepository;
@@ -49,10 +49,10 @@ public class JWTService {
         }
     }
 
-     public String generateToken(String email, String authorities) {
+    public String generateToken(String email, String authorities) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", authorities);
-        
+
         return Jwts.builder()
                 .claims()
                 .add(claims)
@@ -78,7 +78,7 @@ public class JWTService {
             // Save new token if no entry exists
             tokenRepository.save(new Token(token, extractExpiration(token).toInstant(), email));
         }
-        
+
     }
 
     private SecretKey getSignKey() {
@@ -108,33 +108,35 @@ public class JWTService {
     }
 
     private Boolean isTokenExpired(String token) {
+
         return extractExpiration(token).before(new Date());
     }
 
     // Check if a token exists before validation
     public boolean isTokenStored(String token) {
+        System.out.println("Checking if token is stored");
         return tokenRepository.findByToken(token).isPresent();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        System.out.println("UserDetails username: " + userDetails.getUsername() + ", Token username = " + username);
+        return (username.equalsIgnoreCase(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public void invalidateToken(String token) {
-        //tokenRepository.findByToken(token).ifPresent(tokenRepository::delete);
+        // tokenRepository.findByToken(token).ifPresent(tokenRepository::delete);
         tokenRepository.findByToken(token).ifPresentOrElse(
-            tokenRepository::delete , 
-            () -> { throw new ResourceNotFoundException("Token not found!"); }
-        );
+                tokenRepository::delete,
+                () -> {
+                    throw new ResourceNotFoundException("Token not found!");
+                });
     }
 
-     // Cleanup: Runs every Day to delete expired tokens
+    // Cleanup: Runs every Day to delete expired tokens
     @Scheduled(fixedRate = 60 * 60 * 24 * 1000) // Every Day
     public void cleanupExpiredTokens() {
         tokenRepository.deleteExpiredTokens(Instant.now());
     }
-
-
 
 }
