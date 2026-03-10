@@ -21,6 +21,7 @@ import com.sokratis.ExpenseTracker.Service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -44,7 +45,7 @@ public class AuthContorller {
 
     @PostMapping("/register")
     @Operation(summary = "Register a User", description = "Add a new User to the system")
-    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody UserCreationRequest user) {
+    public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody UserCreationRequest user) {
         try {
             UserDTO createdUser = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User Created", createdUser));
