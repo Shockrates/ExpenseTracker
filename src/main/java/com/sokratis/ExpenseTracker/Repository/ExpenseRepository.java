@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,25 +18,31 @@ import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Model.User;
 
 @Repository
-public interface ExpenseRepository extends JpaRepository<Expense, Long>{
+public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     @NonNull
-    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    Page<Expense> findAllByOrderByExpenseDateDesc( Pageable pageable);
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
+    Page<Expense> findAllByOrderByExpenseDateDesc(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByExpenseUser(User user, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
-    Page<Expense> findByExpenseCategory(Category category,Pageable pageable);
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
+    Page<Expense> findByExpenseCategory(Category category, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     List<Expense> findByExpenseCategory(Category category);
 
-    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
+    List<Expense> findByHouseholdId(Long householdId);
+
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
+    List<Expense> findByHouseholdIdAndUserId(Long householdId, Long userId);
+
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByExpenseDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"expenseUser", "expenseCategory"})
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByExpenseAmountBetween(Double lowestAmount, Double highestAmount, Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e")
@@ -46,5 +53,22 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>{
 
     @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e WHERE e.expenseCategory.id = :categoryId")
     Double getTotalExpensesByCategory(@Param("categoryId") Long categoryId);
-    
+
+    @Query("""
+                SELECT COALESCE(SUM(e.amount),0)
+                FROM Expense e
+                WHERE e.householdId = :householdId
+            """)
+    BigDecimal getTotalExpensesByHousehold(Long householdId);
+
+    @Query("""
+                SELECT COALESCE(SUM(e.amount),0)
+                FROM Expense e
+                WHERE e.householdId = :householdId
+                AND e.expenseUser.id = :userId
+            """)
+    BigDecimal getTotalExpensesByHouseholdAndUser(
+            Long householdId,
+            Long userId);
+
 }
