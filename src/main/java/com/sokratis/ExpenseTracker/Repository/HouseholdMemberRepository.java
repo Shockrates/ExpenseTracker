@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.sokratis.ExpenseTracker.Model.HouseholdMember;
 
 @Repository
-public interface HoseholdMemberRepository extends JpaRepository<HouseholdMember, Long> {
+public interface HouseholdMemberRepository extends JpaRepository<HouseholdMember, Long> {
 
     List<HouseholdMember> findByUserId(Long userId);
 

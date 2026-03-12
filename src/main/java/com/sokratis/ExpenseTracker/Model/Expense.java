@@ -18,15 +18,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @DynamicInsert
-public class Expense{
-    
+public class Expense {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "expense_id")
@@ -39,7 +38,6 @@ public class Expense{
     @PastOrPresent(message = "Expense date cannot be in the future")
     private LocalDate expenseDate;
 
-   
     @Column(name = "expense_description")
     private String expenseDescription;
 
@@ -50,6 +48,10 @@ public class Expense{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category expenseCategory;
+
+    @Column(nullable = false)
+    @JoinColumn(name = "household_id", referencedColumnName = "household_id")
+    private Long householdId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDate createdAt;
@@ -66,6 +68,5 @@ public class Expense{
     protected void onUpdate() {
         updatedAt = LocalDate.now();
     }
-
 
 }

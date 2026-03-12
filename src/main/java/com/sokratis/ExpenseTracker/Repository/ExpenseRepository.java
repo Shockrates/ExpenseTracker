@@ -37,7 +37,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByHouseholdId(Long householdId);
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
-    List<Expense> findByHouseholdIdAndUserId(Long householdId, Long userId);
+    List<Expense> findByHouseholdIdAndExpenseUserUserId(Long householdId, Long userId);
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByExpenseDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
@@ -55,14 +55,14 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Double getTotalExpensesByCategory(@Param("categoryId") Long categoryId);
 
     @Query("""
-                SELECT COALESCE(SUM(e.amount),0)
+                SELECT COALESCE(SUM(e.expenseAmount),0)
                 FROM Expense e
                 WHERE e.householdId = :householdId
             """)
     BigDecimal getTotalExpensesByHousehold(Long householdId);
 
     @Query("""
-                SELECT COALESCE(SUM(e.amount),0)
+                SELECT COALESCE(SUM(e.expenseAmount),0)
                 FROM Expense e
                 WHERE e.householdId = :householdId
                 AND e.expenseUser.id = :userId
