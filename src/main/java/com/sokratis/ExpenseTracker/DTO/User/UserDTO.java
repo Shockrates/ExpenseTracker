@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.DTO;
+package com.sokratis.ExpenseTracker.DTO.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

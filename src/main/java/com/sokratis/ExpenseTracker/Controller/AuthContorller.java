@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
-import com.sokratis.ExpenseTracker.DTO.LoginRequest;
-import com.sokratis.ExpenseTracker.DTO.LoginResponse;
-import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
+import com.sokratis.ExpenseTracker.DTO.Auth.LoginRequest;
+import com.sokratis.ExpenseTracker.DTO.Auth.LoginResponse;
+import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Model.UserInfoDetails;
 import com.sokratis.ExpenseTracker.Service.UserService;
@@ -45,7 +45,7 @@ public class AuthContorller {
 
     @PostMapping("/register")
     @Operation(summary = "Register a User", description = "Add a new User to the system")
-    public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody UserCreationRequest user) {
+    public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody RegisterRequest user) {
         try {
             UserDTO createdUser = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User Created", createdUser));

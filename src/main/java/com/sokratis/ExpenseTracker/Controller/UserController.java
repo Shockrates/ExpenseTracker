@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
-import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
 
 import com.sokratis.ExpenseTracker.Service.UserService;
@@ -55,7 +55,7 @@ public class UserController {
     @PutMapping("/{id}")
     @Operation(summary = "Update existing User", description = "Update a User's details")
     @PreAuthorize("hasRole('ADMIN') or #id == @securityUtils.getPrincipalId()")
-    public ResponseEntity<ApiResponse<UserDTO>> updateUser(@PathVariable Long id, @RequestBody UserCreationRequest user) {
+    public ResponseEntity<ApiResponse<UserDTO>> updateUser(@PathVariable Long id, @RequestBody RegisterRequest user) {
  
             return userService.updateUser(id, user)
                     .map(updatedUser -> ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User Updated", updatedUser)))

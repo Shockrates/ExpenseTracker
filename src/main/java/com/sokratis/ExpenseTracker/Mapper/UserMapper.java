@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
-import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
 
 public class UserMapper {
@@ -35,7 +35,7 @@ public class UserMapper {
         return user;
     }
 
-    public static User toEntity(UserCreationRequest request) {
+    public static User toEntity(RegisterRequest request) {
         if (request == null) {
             return null;
         }

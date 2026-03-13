@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.DTO;
+package com.sokratis.ExpenseTracker.DTO.Auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationRequest {
+public class RegisterRequest {
 
     @NotNull(message = "User name cannot be null")
     private String userName;
 
-    @NotNull(message = "Email cannot be null") // Application-level validation
-    @Email(message = "Invalid email format") // Application-level validation
+    @NotNull(message = "Email cannot be null") 
+    @Email(message = "Invalid email format") 
     private String userEmail;
 
     @NotNull(message = "Password cannot be null")

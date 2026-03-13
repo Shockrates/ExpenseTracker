@@ -11,10 +11,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
-import com.sokratis.ExpenseTracker.DTO.LoginRequest;
-import com.sokratis.ExpenseTracker.DTO.LoginResponse;
-import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
+
+import com.sokratis.ExpenseTracker.DTO.Auth.LoginRequest;
+import com.sokratis.ExpenseTracker.DTO.Auth.LoginResponse;
+import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Model.UserInfoDetails;
@@ -80,7 +81,7 @@ public class UserService implements IUserService {
     }
 
     // Create a new User
-    public UserDTO saveUser(UserCreationRequest user) {
+    public UserDTO saveUser(RegisterRequest user) {
 
         if (user.getUserEmail() == null || user.getUserEmail() == "") {
             throw new IllegalArgumentException("Please Enter a valid email");
@@ -95,7 +96,7 @@ public class UserService implements IUserService {
     }
 
     // Update user (except password)
-    public Optional<UserDTO> updateUser(Long id, UserCreationRequest updatedUser) {
+    public Optional<UserDTO> updateUser(Long id, RegisterRequest updatedUser) {
 
         return userRepository.findById(id).map(user -> {
 

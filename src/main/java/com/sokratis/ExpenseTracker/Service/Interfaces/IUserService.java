@@ -3,8 +3,8 @@ package com.sokratis.ExpenseTracker.Service.Interfaces;
 import java.util.List;
 import java.util.Optional;
 
-import com.sokratis.ExpenseTracker.DTO.UserDTO;
-import com.sokratis.ExpenseTracker.DTO.UserCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
 
 
@@ -29,7 +29,7 @@ public interface IUserService {
      * @param User the User to save
      * @return the saved User
      */
-    UserDTO saveUser(UserCreationRequest user);
+    UserDTO saveUser(RegisterRequest user);
 
     /**
      * Updates an existing User entity.
@@ -37,7 +37,7 @@ public interface IUserService {
      * @param UserId the ID of the User to update
      * @return the updated User
      */
-    Optional<UserDTO> updateUser(Long UserId, UserCreationRequest updatedUser);
+    Optional<UserDTO> updateUser(Long UserId, RegisterRequest updatedUser);
 
 
     /**

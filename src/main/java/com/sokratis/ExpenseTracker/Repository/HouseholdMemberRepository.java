@@ -10,7 +10,7 @@ import com.sokratis.ExpenseTracker.Model.HouseholdMember;
 @Repository
 public interface HouseholdMemberRepository extends JpaRepository<HouseholdMember, Long> {
 
-    List<HouseholdMember> findByUserId(Long userId);
+    List<HouseholdMember> findByUserUserId(Long userId);
 
     List<HouseholdMember> findByHouseholdId(Long householdId);
 

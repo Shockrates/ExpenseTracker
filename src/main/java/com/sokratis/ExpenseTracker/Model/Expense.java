@@ -50,7 +50,7 @@ public class Expense {
     private Category expenseCategory;
 
     @Column(nullable = false)
-    @JoinColumn(name = "household_id", referencedColumnName = "household_id")
+    @JoinColumn(name = "household_id", referencedColumnName = "id")
     private Long householdId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
