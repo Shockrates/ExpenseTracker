@@ -51,7 +51,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs.yaml")
                         .permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()) // COMMENTED FOR TESTING
+                // .anyRequest().permitAll()) // REMOVE THIS LINE AFTER TESTING
                 .formLogin(form -> form.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
