@@ -89,12 +89,33 @@ public class HouseholdService {
         boolean isCreator = household.getCreatedBy().getUserId().equals(user.getId());
 
         if (!isCreator && !isAdmin) {
-            throw new AccessDeniedException("You dont have perimisio for this update");
+            throw new AccessDeniedException("You dont have perimision for this update");
         }
 
         household.setName(householdRequest.name());
         return HouseholdMapper.toDTO(householdRepository.save(household));
 
     }
+
+    @Transactional
+    public HouseholdDTO deleteHousehold(Long HouseholdId, UserInfoDetails user) {
+
+        Household household = householdRepository.findWithCreatedById(HouseholdId)
+                .orElseThrow(() -> new IllegalArgumentException("Household not found"));
+
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        boolean isCreator = household.getCreatedBy().getUserId().equals(user.getId());
+
+        if (!isCreator && !isAdmin) {
+            throw new AccessDeniedException("You dont have perimision for this deletion");
+        }
+        householdRepository.deleteById(HouseholdId);
+        return HouseholdMapper.toDTO(household);
+
+    }
+
+
+
 
 }

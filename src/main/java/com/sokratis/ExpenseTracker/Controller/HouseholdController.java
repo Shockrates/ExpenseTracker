@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,8 +80,21 @@ public class HouseholdController {
             @AuthenticationPrincipal UserInfoDetails userDetails) {
 
         HouseholdDTO household = householdService.updateHousehold(id, householdrequest, userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Created", household));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Updated", household));
 
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete household", description = "Delete a  household ")
+    public ResponseEntity<ApiResponse<HouseholdDTO>> deleteHousehold(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserInfoDetails userDetails) {
+
+        HouseholdDTO deletedHousehold = householdService.deleteHousehold(id, userDetails);
+
+         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Deleted", deletedHousehold));
+
+    }
+
 
 }
