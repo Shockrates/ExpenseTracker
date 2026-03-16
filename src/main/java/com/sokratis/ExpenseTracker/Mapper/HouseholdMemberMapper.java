@@ -9,6 +9,15 @@ import com.sokratis.ExpenseTracker.Model.HouseholdMember;
 
 public class HouseholdMemberMapper {
 
+    public static HouseholdMemberResponse toDTO(HouseholdMember h) {
+        return new HouseholdMemberResponse(
+                h.getUser().getUserId(),
+                h.getUser().getUserName(),
+                h.getUser().getUserEmail(),
+                h.getRole());
+
+    }
+
     public static List<HouseholdMemberResponse> toDTOList(List<HouseholdMember> hList) {
         return hList.stream().map(h -> new HouseholdMemberResponse(
                 h.getUser().getUserId(),

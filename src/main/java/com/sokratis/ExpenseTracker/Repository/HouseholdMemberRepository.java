@@ -16,4 +16,6 @@ public interface HouseholdMemberRepository extends JpaRepository<HouseholdMember
     @EntityGraph(attributePaths = { "user" })
     List<HouseholdMember> findByHouseholdId(Long householdId);
 
+    boolean existsByHouseholdIdAndUserUserId(Long householdId, Long userId);
+
 }

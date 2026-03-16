@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.sokratis.ExpenseTracker.DTO.Household.AddMemberRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDTO;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDetailedDTO;
@@ -78,10 +79,10 @@ public class HouseholdService {
     }
 
     @Transactional
-    public HouseholdDTO updateHousehold(Long HouseholdId, HouseholdCreationRequest householdRequest,
+    public HouseholdDTO updateHousehold(Long householdId, HouseholdCreationRequest householdRequest,
             UserInfoDetails user) {
 
-        Household household = householdRepository.findWithCreatedById(HouseholdId)
+        Household household = householdRepository.findWithCreatedById(householdId)
                 .orElseThrow(() -> new IllegalArgumentException("Household not found"));
 
         boolean isAdmin = user.getAuthorities().stream()
@@ -115,7 +116,30 @@ public class HouseholdService {
 
     }
 
+    @Transactional
+    public HouseholdMemberResponse addMemeber(Long householdId, AddMemberRequest memberRequest) {
 
+        // boolean useExists = userRepository.existsByUserEmail(email);
+        User user = userRepository.findByUserEmail(memberRequest.email())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        Household household = householdRepository.findWithCreatedById(householdId)
+                .orElseThrow(() -> new IllegalArgumentException("Household not found"));
+
+        boolean relationExists = memberRepository.existsByHouseholdIdAndUserUserId(householdId, user.getUserId());
+
+        // TO DO: Validation if user is already member.
+        // Validation if logged use can add members
+
+        HouseholdMember addedMember = HouseholdMember.builder()
+                .household(household)
+                .user(user)
+                .role(memberRequest.role())
+                .build();
+        memberRepository.save(addedMember);
+
+        return HouseholdMemberMapper.toDTO(addedMember);
+
+    }
 
 }
