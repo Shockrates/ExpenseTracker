@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record AddMemberRequest(
 
-        @NotNull(message = "Email cannot be null") @Email(message = "Invalid email format") String email,
+                @NotNull(message = "Email cannot be null") @Email(message = "Invalid email format") String email,
 
-        @NotEmpty(message = "Role must be provided") Role role) {
+                @NotNull(message = "Role must be provided") Role role) {
 
 }

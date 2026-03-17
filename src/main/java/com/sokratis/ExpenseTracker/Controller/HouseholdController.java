@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ApiResponse;
+import com.sokratis.ExpenseTracker.DTO.Household.AddMemberRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDTO;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDetailedDTO;
+import com.sokratis.ExpenseTracker.DTO.Household.HouseholdMemberResponse;
 import com.sokratis.ExpenseTracker.Model.Household;
 import com.sokratis.ExpenseTracker.Model.UserInfoDetails;
 import com.sokratis.ExpenseTracker.Service.HouseholdService;
@@ -92,9 +94,33 @@ public class HouseholdController {
 
         HouseholdDTO deletedHousehold = householdService.deleteHousehold(id, userDetails);
 
-         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Deleted", deletedHousehold));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Deleted", deletedHousehold));
 
     }
 
+    @PostMapping("/{id}/members")
+    @Operation(summary = "Add new member", description = "Adds a new memeber to household")
+    public ResponseEntity<ApiResponse<HouseholdMemberResponse>> addmember(
+            @PathVariable Long id,
+            @Valid @RequestBody AddMemberRequest addMemberrequest,
+            @AuthenticationPrincipal UserInfoDetails userDetails) {
+
+        HouseholdMemberResponse household = householdService.addMemeber(id, addMemberrequest, userDetails);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Updated", household));
+
+    }
+
+    @DeleteMapping("/{id}/members/{userId}")
+    @Operation(summary = "Add new member", description = "Adds a new memeber to household")
+
+    public ResponseEntity<ApiResponse<Void>> deleteMember(
+            @PathVariable Long id,
+            @PathVariable Long userId,
+            @AuthenticationPrincipal UserInfoDetails userDetails) {
+
+        householdService.deleteMemeber(id, userId, userDetails);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Household Updated", null));
+
+    }
 
 }
