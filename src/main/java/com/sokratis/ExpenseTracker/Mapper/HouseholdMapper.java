@@ -35,17 +35,17 @@ public class HouseholdMapper {
                 h.getName(),
                 h.getCreatedBy().getUserId(),
                 h.getCreatedBy().getUserName(),
-                h.getCreatedBy().getUserEmail(), 
+                h.getCreatedBy().getUserEmail(),
                 list.size(),
                 list
 
         );
     }
 
-     public static List<HouseholdDTO> toDTOList(List<HouseholdMember> memberList) {
-        return memberList.stream().map(member -> HouseholdMapper::toDTO(member.getHousehold())
+    public static List<HouseholdDTO> toHouseholdDTOList(List<HouseholdMember> memberList) {
+        return memberList.stream().map(member -> toDTO(member.getHousehold()))
                 .toList();
-     )
+
     }
 
 }

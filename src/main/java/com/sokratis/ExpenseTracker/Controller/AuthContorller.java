@@ -55,7 +55,7 @@ public class AuthContorller {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "Get logged", description = "Login a user")
+    @Operation(summary = "Get logged user", description = "Get current logged user")
     public ResponseEntity<ApiResponse<UserDTO>> getCurrentUser(@AuthenticationPrincipal UserInfoDetails userDetails) {
 
         try {

@@ -2,7 +2,6 @@ package com.sokratis.ExpenseTracker.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +15,17 @@ import com.sokratis.ExpenseTracker.DTO.Auth.LoginRequest;
 import com.sokratis.ExpenseTracker.DTO.Auth.LoginResponse;
 import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDTO;
-import com.sokratis.ExpenseTracker.DTO.Household.HouseholdMemberResponse;
+
 import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.DTO.User.UserHousehold;
-import com.sokratis.ExpenseTracker.Mapper.HouseholdMemberMapper;
+import com.sokratis.ExpenseTracker.Mapper.HouseholdMapper;
 import com.sokratis.ExpenseTracker.Mapper.UserMapper;
+
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Model.UserInfoDetails;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
 import com.sokratis.ExpenseTracker.Repository.HouseholdMemberRepository;
-import com.sokratis.ExpenseTracker.Repository.TokenRepository;
+
 import com.sokratis.ExpenseTracker.Repository.UserRepository;
 import com.sokratis.ExpenseTracker.Service.Interfaces.IUserService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
@@ -39,7 +39,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final ExpenseRepository expenseRepository;
-    private final HouseholdMemberRepository membersRepository ;
+    private final HouseholdMemberRepository membersRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final SecurityUtils utils;
@@ -142,11 +142,12 @@ public class UserService implements IUserService {
         return expenseRepository.getTotalExpensesByUser(userId);
     }
 
-    public UserHousehold fetchUserWithHouseholds(Long userId){
+    public UserHousehold fetchUserWithHouseholds(Long userId) {
 
-        List<HouseholdMemberResponse> userHouseholds = HouseholdMemberMapper.toDTOList(membersRepository.findByUserUserId(userId)) ;
-        UserHousehold
+        List<HouseholdDTO> userHouseholds = HouseholdMapper
+                .toHouseholdDTOList(membersRepository.findByUserUserId(userId));
 
+        return new UserHousehold(userId, userHouseholds);
     }
 
 }
