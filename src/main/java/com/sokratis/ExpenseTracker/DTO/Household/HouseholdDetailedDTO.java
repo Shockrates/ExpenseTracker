@@ -8,6 +8,7 @@ public record HouseholdDetailedDTO(
     Long creatorId,
     String creatorName,
     String creatorEmail,
+    Integer membersCount,
     List<HouseholdMemberResponse> members
 ) {
 

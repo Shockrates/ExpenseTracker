@@ -13,6 +13,7 @@ import com.sokratis.ExpenseTracker.Model.Enums.Role;
 @Repository
 public interface HouseholdMemberRepository extends JpaRepository<HouseholdMember, Long> {
 
+    @EntityGraph(attributePaths = { "household" })
     List<HouseholdMember> findByUserUserId(Long userId);
 
     @EntityGraph(attributePaths = { "user" })

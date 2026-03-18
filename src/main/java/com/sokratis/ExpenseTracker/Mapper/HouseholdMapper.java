@@ -6,6 +6,7 @@ import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDTO;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDetailedDTO;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdMemberResponse;
 import com.sokratis.ExpenseTracker.Model.Household;
+import com.sokratis.ExpenseTracker.Model.HouseholdMember;
 
 public class HouseholdMapper {
 
@@ -34,10 +35,17 @@ public class HouseholdMapper {
                 h.getName(),
                 h.getCreatedBy().getUserId(),
                 h.getCreatedBy().getUserName(),
-                h.getCreatedBy().getUserEmail(),
+                h.getCreatedBy().getUserEmail(), 
+                list.size(),
                 list
 
         );
+    }
+
+     public static List<HouseholdDTO> toDTOList(List<HouseholdMember> memberList) {
+        return memberList.stream().map(member -> HouseholdMapper::toDTO(member.getHousehold())
+                .toList();
+     )
     }
 
 }
