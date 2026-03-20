@@ -59,11 +59,14 @@ public class AuthContorller {
     public ResponseEntity<ApiResponse<UserDTO>> getCurrentUser(@AuthenticationPrincipal UserInfoDetails userDetails) {
 
         try {
-            UserDTO currentUser = new UserDTO();
+            UserDTO currentUser = new UserDTO(
+                    userDetails.getId(),
+                    userDetails.getDisplayName(),
+                    userDetails.getUsername(),
+                    userDetails.getAuthoritiesAsString());
+
             System.out.println("Logget User Email " + userDetails.getDisplayName());
-            currentUser.setUserId(userDetails.getId());
-            currentUser.setUserName(userDetails.getDisplayName());
-            currentUser.setUserEmail(userDetails.getUsername());
+
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Current User", currentUser));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));

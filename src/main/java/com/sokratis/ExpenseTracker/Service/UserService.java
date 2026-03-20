@@ -39,7 +39,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final ExpenseRepository expenseRepository;
-    //private final HouseholdMemberRepository membersRepository;
+    // private final HouseholdMemberRepository membersRepository;
     private final HouseholdRepository householdRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
@@ -143,12 +143,16 @@ public class UserService implements IUserService {
         return expenseRepository.getTotalExpensesByUser(userId);
     }
 
-    public UserHousehold fetchUserWithHouseholds(Long userId) {
+    public UserHousehold fetchUserWithHouseholds(UserInfoDetails userDetails) {
 
-        // List<HouseholdDTO> userHouseholds = HouseholdMapper
-        //         .toHouseholdDTOList(membersRepository.findByUserUserId(userId));
-        List<HouseholdDTO> userHouseholds = householdRepository.findHouseholdDTOsForUser(userId);
-        return new UserHousehold(userId, userHouseholds);
+        UserDTO user = new UserDTO(
+                userDetails.getId(),
+                userDetails.getDisplayName(),
+                userDetails.getUsername(),
+                userDetails.getAuthoritiesAsString());
+
+        List<HouseholdDTO> userHouseholds = householdRepository.findHouseholdDTOsForUser(userDetails.getId());
+        return new UserHousehold(user, userHouseholds);
     }
 
 }

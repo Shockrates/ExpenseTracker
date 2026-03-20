@@ -105,7 +105,7 @@ public class UserController {
             @AuthenticationPrincipal UserInfoDetails userDetails) {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Current User Households",
-                userService.fetchUserWithHouseholds(userDetails.getId())));
+                userService.fetchUserWithHouseholds(userDetails)));
 
     }
 
