@@ -2,6 +2,8 @@ package com.sokratis.ExpenseTracker.Model;
 
 import java.math.BigDecimal;
 
+import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

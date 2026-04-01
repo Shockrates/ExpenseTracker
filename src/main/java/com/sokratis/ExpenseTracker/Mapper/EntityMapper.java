@@ -29,8 +29,9 @@ public class EntityMapper {
         if (entityList == null) {
             return null;
         }
-        Type listType = new TypeToken<List<D>>() {}.getType();
-        return modelMapper.map(entityList, listType);
+        return entityList.stream()
+                .map(entity -> modelMapper.map(entity, dtoClass))
+                .toList();
     }
 
     // Convert a list of DTOs to a list of entities
@@ -38,7 +39,8 @@ public class EntityMapper {
         if (dtoList == null) {
             return null;
         }
-        Type listType = new TypeToken<List<E>>() {}.getType();
+        Type listType = new TypeToken<List<E>>() {
+        }.getType();
         return modelMapper.map(dtoList, listType);
     }
 }

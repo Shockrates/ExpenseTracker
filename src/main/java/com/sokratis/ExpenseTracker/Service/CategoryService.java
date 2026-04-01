@@ -10,6 +10,7 @@ import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.Mapper.CategoryMapper;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
+import com.sokratis.ExpenseTracker.Mapper.HouseholdMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
@@ -20,25 +21,25 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class CategoryService implements ICategoryService{
+public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
 
     @Override
     public List<CategoryDTO> fetchCategoryList() {
-        return CategoryMapper.toDTOList( categoryRepository.findAll(), CategoryDTO.class);
+        return CategoryMapper.toDTOList(categoryRepository.findAll(), CategoryDTO.class);
     }
 
     @Override
     public Optional<CategoryDTO> fetchCategory(Long categoryId) {
         return categoryRepository.findById(categoryId)
-        .map(category -> CategoryMapper.toDTO(category, CategoryDTO.class));
+                .map(category -> CategoryMapper.toDTO(category, CategoryDTO.class));
     }
 
     @Override
     public Category saveCategory(Category category) {
-        
+
         if (categoryRepository.findByCategoryNameIgnoreCase(category.getCategoryName()).isPresent()) {
             throw new IllegalArgumentException("Category with the same name already exists!");
         }
@@ -48,10 +49,12 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public Optional<Category> updateCategory(Long categoryId, Category updatedCategory) {
-        
+
         return categoryRepository.findById(categoryId).map(category -> {
-            Optional<Category> existingCategoryWithName = categoryRepository.findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
-            if (existingCategoryWithName.isPresent() && !existingCategoryWithName.get().getCategoryId().equals(categoryId)) {
+            Optional<Category> existingCategoryWithName = categoryRepository
+                    .findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
+            if (existingCategoryWithName.isPresent()
+                    && !existingCategoryWithName.get().getCategoryId().equals(categoryId)) {
                 throw new IllegalArgumentException("Category with the same name already exists!");
             }
 
@@ -74,18 +77,16 @@ public class CategoryService implements ICategoryService{
         return expenseRepository.getTotalExpensesByCategory(CategoryId);
     }
 
-    
     public CategoryDTO fetchCategoryWithExpenses(Long categoryId) {
-        
+
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-                
+
         List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category));
-                
-        return new CategoryDTO(category.getCategoryId(), category.getCategoryName(), expenseDTOs);
+
+        return new CategoryDTO(category.getCategoryId(), category.getCategoryName(),
+                HouseholdMapper.toDTO(category.getHousehold()),
+                expenseDTOs);
     }
 
-    
-
-    
 }
