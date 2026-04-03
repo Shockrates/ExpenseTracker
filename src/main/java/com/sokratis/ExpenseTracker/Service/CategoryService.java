@@ -28,7 +28,15 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryDTO> fetchCategoryList() {
-        return CategoryMapper.toDTOList(categoryRepository.findAll(), CategoryDTO.class);
+        return categoryRepository.findAll().stream()
+        .map(category -> new CategoryDTO(
+            category.getCategoryId(),
+            category.getCategoryName(),
+            HouseholdMapper.toDTO(category.getHousehold()),
+            null
+        ))
+        .toList();
+        //return CategoryMapper.toDTOList(categoryRepository.findAll(), CategoryDTO.class);
     }
 
     @Override
