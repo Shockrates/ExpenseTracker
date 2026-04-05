@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.Auth.LoginRequest;
 import com.sokratis.ExpenseTracker.DTO.Auth.LoginResponse;
 import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.Model.User;
 import com.sokratis.ExpenseTracker.Model.UserInfoDetails;

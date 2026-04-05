@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sokratis.ExpenseTracker.DTO.ApiResponse;
+import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.Household.AddMemberRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Household.HouseholdDTO;

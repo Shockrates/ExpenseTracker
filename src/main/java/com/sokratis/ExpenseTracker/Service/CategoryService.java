@@ -6,8 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.sokratis.ExpenseTracker.DTO.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
 import com.sokratis.ExpenseTracker.Mapper.CategoryMapper;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Mapper.HouseholdMapper;
@@ -28,15 +29,14 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryDTO> fetchCategoryList() {
-        return categoryRepository.findAll().stream()
-        .map(category -> new CategoryDTO(
-            category.getCategoryId(),
-            category.getCategoryName(),
-            HouseholdMapper.toDTO(category.getHousehold()),
-            null
-        ))
-        .toList();
-        //return CategoryMapper.toDTOList(categoryRepository.findAll(), CategoryDTO.class);
+        // return categoryRepository.findAll().stream()
+        // .map(category -> new CategoryDTO(
+        // category.getCategoryId(),
+        // category.getCategoryName(),
+        // CategoryMapper.getHouseholdId(category),
+        // null))
+        // .toList();
+        return CategoryMapper.toDTOList(categoryRepository.findAll());
     }
 
     @Override
@@ -85,16 +85,20 @@ public class CategoryService implements ICategoryService {
         return expenseRepository.getTotalExpensesByCategory(CategoryId);
     }
 
-    public CategoryDTO fetchCategoryWithExpenses(Long categoryId) {
+    public CategoryDetailedDTO fetchCategoryWithExpenses(Long categoryId) {
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category));
 
-        return new CategoryDTO(category.getCategoryId(), category.getCategoryName(),
-                HouseholdMapper.toDTO(category.getHousehold()),
-                expenseDTOs);
+        return CategoryMapper.toDetailedDTO(category, expenseDTOs);
+        // return new CategoryDTO(
+        // category.getCategoryId(),
+        // category.getCategoryName(),
+        // category.getColor(),
+        // category.getBudgetLimit(),
+        // CategoryMapper.getHouseholdId(category));
     }
 
 }

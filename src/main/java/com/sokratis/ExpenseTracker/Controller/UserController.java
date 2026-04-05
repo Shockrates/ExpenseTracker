@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sokratis.ExpenseTracker.DTO.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.Auth.RegisterRequest;
+import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 import com.sokratis.ExpenseTracker.DTO.User.UserHousehold;
 import com.sokratis.ExpenseTracker.Model.User;
@@ -37,7 +37,6 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Get all User", description = "Fetch a list of all Users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-
         return ResponseEntity.status(HttpStatus.OK).body(userService.fetchUserList());
     }
 

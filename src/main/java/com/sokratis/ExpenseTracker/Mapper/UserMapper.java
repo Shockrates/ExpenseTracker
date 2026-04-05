@@ -16,17 +16,21 @@ public class UserMapper {
     public static UserDTO toDTO(User user) {
         if (user == null) {
             return null;
-        } 
-        UserDTO dto = modelMapper.map(user, UserDTO.class);
-        return dto;
+        }
+        // UserDTO dto = modelMapper.map(user, UserDTO.class);
+        return new UserDTO(
+                user.getUserId(),
+                user.getUserName(),
+                user.getUserEmail(),
+                user.getUserRoles());
     }
-    
+
     public static List<UserDTO> toDTOList(List<User> users) {
         return users.stream()
-            .map(UserMapper::toDTO)
-            .collect(Collectors.toList());
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
     }
-    
+
     public static User toEntity(UserDTO dto) {
         if (dto == null) {
             return null;
@@ -43,10 +47,9 @@ public class UserMapper {
         return user;
     }
 
-    
     public static List<User> toEntityList(List<UserDTO> dtoList) {
         return dtoList.stream()
-            .map(dto -> toEntity(dto))
-            .collect(Collectors.toList());
+                .map(dto -> toEntity(dto))
+                .collect(Collectors.toList());
     }
 }

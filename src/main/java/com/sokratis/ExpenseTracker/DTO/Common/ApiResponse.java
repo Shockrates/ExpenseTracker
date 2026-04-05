@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.DTO;
+package com.sokratis.ExpenseTracker.DTO.Common;
 
 import java.time.Instant;
 import java.util.Date;
@@ -29,15 +29,14 @@ public class ApiResponse<T> {
         return new ApiResponse<>(message, null);
     }
 
-    public static <T>ResponseEntity<HttpResponse> success(T data, String message, HttpStatus status){
+    public static <T> ResponseEntity<HttpResponse> success(T data, String message, HttpStatus status) {
         return ResponseEntity.status(status).body(
-            HttpResponse.builder()
-            .timeStamp(Instant.now().toString())
-            .data(Map.of("data", data))
-            .message(message)
-            .status(status)
-            .statusCode(status.value())
-            .build()
-        );
+                HttpResponse.builder()
+                        .timeStamp(Instant.now().toString())
+                        .data(Map.of("data", data))
+                        .message(message)
+                        .status(status)
+                        .statusCode(status.value())
+                        .build());
     }
 }

@@ -2,6 +2,7 @@ package com.sokratis.ExpenseTracker.DTO;
 
 import java.time.LocalDate;
 
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.User.UserDTO;
 
 import lombok.AllArgsConstructor;
@@ -23,4 +24,3 @@ public class ExpenseDTO {
     private UserDTO expenseUser;
 
 }
-

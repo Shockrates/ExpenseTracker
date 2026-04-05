@@ -11,6 +11,9 @@ import com.sokratis.ExpenseTracker.Model.HouseholdMember;
 public class HouseholdMapper {
 
     public static HouseholdDTO toDTO(Household h) {
+        if (h == null) {
+            return null;
+        }
         return new HouseholdDTO(
 
                 h.getId(),
