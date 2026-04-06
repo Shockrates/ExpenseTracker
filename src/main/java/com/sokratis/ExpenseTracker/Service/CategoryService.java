@@ -7,14 +7,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
 import com.sokratis.ExpenseTracker.Mapper.CategoryMapper;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Mapper.HouseholdMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
+import com.sokratis.ExpenseTracker.Model.Household;
 import com.sokratis.ExpenseTracker.Repository.CategoryRepository;
 import com.sokratis.ExpenseTracker.Repository.ExpenseRepository;
+import com.sokratis.ExpenseTracker.Repository.HouseholdRepository;
 import com.sokratis.ExpenseTracker.Service.Interfaces.ICategoryService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
 
@@ -26,6 +29,7 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
+    private final HouseholdRepository householdRepository;
 
     @Override
     public List<CategoryDTO> fetchCategoryList() {
@@ -46,13 +50,22 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category saveCategory(Category category) {
+    public Category saveCategory(CategoryCreationRequest category) {
 
-        if (categoryRepository.findByCategoryNameIgnoreCase(category.getCategoryName()).isPresent()) {
+        // if
+        // (categoryRepository.findByCategoryNameIgnoreCase(category.categoryName()).isPresent())
+        // {
+        // throw new IllegalArgumentException("Category with the same name already
+        // exists!");
+        // }
+        if (categoryRepository.existsByCategoryNameIgnoreCaseAndHousehold_Id(category.categoryName(),
+                category.householdId())) {
             throw new IllegalArgumentException("Category with the same name already exists!");
         }
 
-        return categoryRepository.save(category);
+        Household household = householdRepository.getReferenceById(category.householdId());
+
+        return categoryRepository.save(CategoryMapper.toEntity(category, household));
     }
 
     @Override

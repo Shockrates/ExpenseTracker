@@ -10,10 +10,12 @@ import com.sokratis.ExpenseTracker.Model.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    @EntityGraph(attributePaths = {"household"})
+    @EntityGraph(attributePaths = { "household" })
     List<Category> findAll();
 
     Optional<Category> findByCategoryNameIgnoreCase(String name);
+
+    boolean existsByCategoryNameIgnoreCaseAndHousehold_Id(String categoryName, Long householdId);
 
     List<Category> findByHouseholdId(Long householdId);
 

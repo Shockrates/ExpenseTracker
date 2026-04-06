@@ -3,6 +3,7 @@ package com.sokratis.ExpenseTracker.Service.Interfaces;
 import java.util.List;
 import java.util.Optional;
 
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 
@@ -29,7 +30,7 @@ public interface ICategoryService {
      * @param Category the Category to save
      * @return the saved Category
      */
-    Category saveCategory(Category category);
+    Category saveCategory(CategoryCreationRequest category);
 
     /**
      * Updates an existing Category entity.

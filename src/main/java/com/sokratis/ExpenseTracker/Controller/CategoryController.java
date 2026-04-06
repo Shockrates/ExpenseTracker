@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
 import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
@@ -50,7 +52,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Register a Category", description = "Add a new Category to the system")
-    public ResponseEntity<ApiResponse<Category>> createUser(@RequestBody Category category) {
+    public ResponseEntity<ApiResponse<Category>> createUser(@RequestBody CategoryCreationRequest category) {
 
         try {
             Category createdCategory = categoryService.saveCategory(category);

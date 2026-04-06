@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseDetailedDTO;
 import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.Common.PageResponse;
 import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
@@ -64,7 +65,7 @@ public class ExpenseController {
 
         @GetMapping("/{id}")
         @Operation(summary = "Get Expense by ID", description = "Fetch a single expense by its ID")
-        public ResponseEntity<ApiResponse<ExpenseDTO>> getExpense(@PathVariable Long id) {
+        public ResponseEntity<ApiResponse<ExpenseDetailedDTO>> getExpense(@PathVariable Long id) {
 
                 return expenseService.fetchExpense(id)
                                 .map(expense -> ResponseEntity.status(HttpStatus.OK)
@@ -120,7 +121,7 @@ public class ExpenseController {
                 Page<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId, page, size);
                 String message = expenses.isEmpty() ? "No Expenses for this User"
                                 : "List of Expenses by User "
-                                                + expenses.getContent().get(0).getUserName();
+                                                + expenses.getContent().get(0).getPaidByName();
                 System.out.println(expenses);
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ApiResponse.success(

@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
+import com.sokratis.ExpenseTracker.Model.Household;
 
 public class CategoryMapper extends EntityMapper {
 
@@ -38,6 +40,16 @@ public class CategoryMapper extends EntityMapper {
                 category.getBudgetLimit(),
                 CategoryMapper.getHouseholdId(category),
                 expenseDTOList);
+    }
+
+    public static Category toEntity(CategoryCreationRequest request, Household household) {
+        Category category = new Category();
+        category.setCategoryName(request.categoryName());
+        category.setColor(request.color());
+        category.setBudgetLimit(request.budgetLimit());
+        category.setHousehold(household);
+
+        return category;
     }
 
     public static List<CategoryDTO> toDTOList(List<Category> clist) {

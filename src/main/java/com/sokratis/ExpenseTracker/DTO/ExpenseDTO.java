@@ -20,8 +20,8 @@ public class ExpenseDTO {
     private String expenseDescription;
     private Long categoryId;
     private String categoryName;
-    private Long userId;
-    private String userName;
+    private Long paidById;
+    private String paidByName;
     // private CategoryDTO expenseCategory;
     // private UserDTO expenseUser;
 
