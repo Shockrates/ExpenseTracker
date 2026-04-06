@@ -120,7 +120,7 @@ public class ExpenseController {
                 Page<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId, page, size);
                 String message = expenses.isEmpty() ? "No Expenses for this User"
                                 : "List of Expenses by User "
-                                                + expenses.getContent().get(0).getExpenseUser().userName();
+                                                + expenses.getContent().get(0).getUserName();
                 System.out.println(expenses);
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ApiResponse.success(
@@ -139,7 +139,7 @@ public class ExpenseController {
                 Page<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId, page, size);
                 String message = expenses.isEmpty() ? "No Expenses for this Category"
                                 : "List of Expenses by Category "
-                                                + expenses.getContent().get(0).getExpenseCategory().name();
+                                                + expenses.getContent().get(0).getCategoryName();
                 System.out.println(expenses);
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ApiResponse.success(

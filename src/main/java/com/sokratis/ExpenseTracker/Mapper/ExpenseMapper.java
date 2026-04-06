@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.ExpenseDetailedDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
@@ -24,11 +25,15 @@ public class ExpenseMapper {
         ExpenseDTO dto = modelMapper.map(expense, ExpenseDTO.class);
 
         if (expense.getExpenseUser() != null) {
-            dto.setExpenseUser(UserMapper.toDTO(expense.getExpenseUser()));
+            //dto.setExpenseUser(UserMapper.toDTO(expense.getExpenseUser()));
+            dto.setUserId(expense.getExpenseUser().getUserId());
+            dto.setUserName(expense.getExpenseUser().getUserName());
         }
 
         if (expense.getExpenseCategory() != null) {
-            dto.setExpenseCategory(CategoryMapper.toDTO(expense.getExpenseCategory()));
+            //dto.setExpenseCategory(CategoryMapper.toDTO(expense.getExpenseCategory()));
+            dto.setCategoryId(expense.getExpenseCategory().getCategoryId());
+            dto.setCategoryName(expense.getExpenseCategory().getCategoryName());
         }
 
         return dto;
@@ -40,7 +45,7 @@ public class ExpenseMapper {
                 .collect(Collectors.toList());
     }
 
-    public static Expense toEntity(ExpenseDTO dto) {
+    public static Expense toEntity(ExpenseDetailedDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -61,11 +66,11 @@ public class ExpenseMapper {
         return expense;
     }
 
-    public static List<Expense> toEntityListWithSameUser(List<ExpenseDTO> dtoList) {
-        return dtoList.stream()
-                .map(dto -> toEntity(dto))
-                .collect(Collectors.toList());
-    }
+    // public static List<Expense> toEntityListWithSameUser(List<ExpenseDTO> dtoList) {
+    //     return dtoList.stream()
+    //             .map(dto -> toEntity(dto))
+    //             .collect(Collectors.toList());
+    // }
 
     public static ExpenseListDTO toExpenseListDTO(List<Expense> expenses) {
 

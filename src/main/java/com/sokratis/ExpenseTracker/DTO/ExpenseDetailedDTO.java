@@ -12,17 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseDTO {
-
-    private Long expenseId;
+public class ExpenseDetailedDTO {
+        private Long expenseId;
     private Double expenseAmount;
     private LocalDate expenseDate;
     private String expenseDescription;
-    private Long categoryId;
-    private String categoryName;
-    private Long userId;
-    private String userName;
-    // private CategoryDTO expenseCategory;
-    // private UserDTO expenseUser;
+    private CategoryDTO expenseCategory;
+    private UserDTO expenseUser;
 
 }
