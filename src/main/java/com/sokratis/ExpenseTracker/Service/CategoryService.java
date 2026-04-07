@@ -50,7 +50,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category saveCategory(CategoryCreationRequest category) {
+    public CategoryDTO saveCategory(CategoryCreationRequest category) {
 
         // if
         // (categoryRepository.findByCategoryNameIgnoreCase(category.categoryName()).isPresent())
@@ -64,16 +64,27 @@ public class CategoryService implements ICategoryService {
         }
 
         Household household = householdRepository.getReferenceById(category.householdId());
-
-        return categoryRepository.save(CategoryMapper.toEntity(category, household));
+        Category savedCategory = categoryRepository.save(CategoryMapper.toEntity(category, household));
+        return CategoryMapper.toDTO(savedCategory);
     }
 
     @Override
-    public Optional<Category> updateCategory(Long categoryId, Category updatedCategory) {
+    public Optional<Category> updateCategory(Long categoryId, CategoryCreationRequest updatedCategory) {
 
+            // Optional<Category> category = categoryRepository.findById(categoryId);
+
+            // if (category.isEmpty()) {
+            //   throw new IllegalArgumentException("Wrong Category Id");  
+            // }
+          if (categoryRepository.existsByCategoryNameIgnoreCaseAndHousehold_Id(updatedCategory.categoryName(),
+                updatedCategory.householdId())) {
+            throw new IllegalArgumentException("Category with the same name already exists!");
+        }
+
+        //NEEDS UPDATE
         return categoryRepository.findById(categoryId).map(category -> {
             Optional<Category> existingCategoryWithName = categoryRepository
-                    .findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
+                    .findByCategoryNameIgnoreCase(updatedCategory.categoryName());
             if (existingCategoryWithName.isPresent()
                     && !existingCategoryWithName.get().getCategoryId().equals(categoryId)) {
                 throw new IllegalArgumentException("Category with the same name already exists!");
@@ -83,8 +94,8 @@ public class CategoryService implements ICategoryService {
 
             return categoryRepository.save(category);
         });
-    }
 
+    }
     @Override
     public void deleteCategoryById(Long categoryId) {
         if (!categoryRepository.existsById(categoryId)) {

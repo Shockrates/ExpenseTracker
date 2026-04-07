@@ -52,10 +52,10 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Register a Category", description = "Add a new Category to the system")
-    public ResponseEntity<ApiResponse<Category>> createUser(@RequestBody CategoryCreationRequest category) {
+    public ResponseEntity<ApiResponse<CategoryDTO>> createCategory(@RequestBody CategoryCreationRequest category) {
 
         try {
-            Category createdCategory = categoryService.saveCategory(category);
+            CategoryDTO createdCategory = categoryService.saveCategory(category);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.success("Category Created", createdCategory));
         } catch (RuntimeException e) {

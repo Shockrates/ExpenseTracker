@@ -17,6 +17,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     boolean existsByCategoryNameIgnoreCaseAndHousehold_Id(String categoryName, Long householdId);
 
+    boolean existsByCategoryId(Long categoryId);
+
     List<Category> findByHouseholdId(Long householdId);
 
 }

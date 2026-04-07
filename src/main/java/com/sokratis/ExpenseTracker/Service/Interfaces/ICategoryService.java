@@ -30,7 +30,7 @@ public interface ICategoryService {
      * @param Category the Category to save
      * @return the saved Category
      */
-    Category saveCategory(CategoryCreationRequest category);
+    CategoryDTO saveCategory(CategoryCreationRequest category);
 
     /**
      * Updates an existing Category entity.
@@ -39,7 +39,7 @@ public interface ICategoryService {
      * @param CategoryId      the ID of the Category to update
      * @return the updated Category
      */
-    Optional<Category> updateCategory(Long categoryId, Category updatedCategory);
+    Optional<Category> updateCategory(Long categoryId, CategoryCreationRequest updatedCategory);
 
     /**
      * Deletes a Category entity by its ID.
