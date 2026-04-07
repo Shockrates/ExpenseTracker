@@ -54,28 +54,21 @@ public class CategoryController {
     @Operation(summary = "Register a Category", description = "Add a new Category to the system")
     public ResponseEntity<ApiResponse<CategoryDTO>> createCategory(@RequestBody CategoryCreationRequest category) {
 
-        try {
-            CategoryDTO createdCategory = categoryService.saveCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponse.success("Category Created", createdCategory));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
-        }
+        CategoryDTO createdCategory = categoryService.saveCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Category Created", createdCategory));
+
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update existing Category", description = "Update a Category's details")
-    public ResponseEntity<ApiResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody Category category) {
-        try {
+    public ResponseEntity<ApiResponse<CategoryDTO>> updateCategory(@PathVariable Long id,
+            @RequestBody CategoryCreationRequest category) {
 
-            return categoryService.updateCategory(id, category)
-                    .map(updatedCategory -> ResponseEntity.status(HttpStatus.OK)
-                            .body(ApiResponse.success("Category Updated", updatedCategory)))
-                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body(ApiResponse.error("Category not found with id " + id)));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
-        }
+        CategoryDTO updatedCategory = categoryService.updateCategory(id, category);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Category Updated", updatedCategory));
+
     }
 
     @DeleteMapping("/{id}")

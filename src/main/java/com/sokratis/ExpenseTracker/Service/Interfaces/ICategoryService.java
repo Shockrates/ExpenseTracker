@@ -39,7 +39,7 @@ public interface ICategoryService {
      * @param CategoryId      the ID of the Category to update
      * @return the updated Category
      */
-    Optional<Category> updateCategory(Long categoryId, CategoryCreationRequest updatedCategory);
+    CategoryDTO updateCategory(Long categoryId, CategoryCreationRequest updatedCategory);
 
     /**
      * Deletes a Category entity by its ID.

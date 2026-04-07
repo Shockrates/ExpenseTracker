@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
@@ -21,6 +22,7 @@ import com.sokratis.ExpenseTracker.Repository.HouseholdRepository;
 import com.sokratis.ExpenseTracker.Service.Interfaces.ICategoryService;
 import com.sokratis.ExpenseTracker.utils.EntityUtils;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -68,34 +70,27 @@ public class CategoryService implements ICategoryService {
         return CategoryMapper.toDTO(savedCategory);
     }
 
-    @Override
-    public Optional<Category> updateCategory(Long categoryId, CategoryCreationRequest updatedCategory) {
+    @Transactional
+    public CategoryDTO updateCategory(Long categoryId, CategoryCreationRequest updatedCategory) {
 
-            // Optional<Category> category = categoryRepository.findById(categoryId);
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category Not Found"));
 
-            // if (category.isEmpty()) {
-            //   throw new IllegalArgumentException("Wrong Category Id");  
-            // }
-          if (categoryRepository.existsByCategoryNameIgnoreCaseAndHousehold_Id(updatedCategory.categoryName(),
-                updatedCategory.householdId())) {
+        if (categoryRepository.existsByCategoryNameIgnoreCaseAndHousehold_Id(updatedCategory.categoryName(),
+                category.getHousehold().getId())) {
             throw new IllegalArgumentException("Category with the same name already exists!");
         }
 
-        //NEEDS UPDATE
-        return categoryRepository.findById(categoryId).map(category -> {
-            Optional<Category> existingCategoryWithName = categoryRepository
-                    .findByCategoryNameIgnoreCase(updatedCategory.categoryName());
-            if (existingCategoryWithName.isPresent()
-                    && !existingCategoryWithName.get().getCategoryId().equals(categoryId)) {
-                throw new IllegalArgumentException("Category with the same name already exists!");
-            }
+        BeanUtils.copyProperties(updatedCategory, category, EntityUtils.getNullPropertyNames(updatedCategory));
 
-            BeanUtils.copyProperties(updatedCategory, category, EntityUtils.getNullPropertyNames(updatedCategory));
-
-            return categoryRepository.save(category);
-        });
+        try {
+            return CategoryMapper.toDTO(categoryRepository.save(category));
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Duplicate category name");
+        }
 
     }
+
     @Override
     public void deleteCategoryById(Long categoryId) {
         if (!categoryRepository.existsById(categoryId)) {
