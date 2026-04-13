@@ -39,6 +39,14 @@ public class CategoryController {
                 .body(ApiResponse.success("List of Categories", categoryService.fetchCategoryList()));
     }
 
+    @GetMapping("/household/{householdId}")
+    @Operation(summary = "Get Categories by Household ID", description = "Fetch a list of Categories for a specific Household")
+    public ResponseEntity<ApiResponse<List<CategoryDTO>>> getCategoriesByHouseholdId(@PathVariable Long householdId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Categories for Household",
+                        categoryService.fetchCategoriesByHouseholdId(householdId)));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get Categroy by ID", description = "Fetch a single Category by its ID")
     public ResponseEntity<ApiResponse<CategoryDTO>> getCategory(@PathVariable Long id) {

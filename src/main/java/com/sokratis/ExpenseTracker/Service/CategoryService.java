@@ -51,6 +51,10 @@ public class CategoryService implements ICategoryService {
                 .map(category -> CategoryMapper.toDTO(category, CategoryDTO.class));
     }
 
+    public List<CategoryDTO> fetchCategoriesByHouseholdId(Long householdId) {
+        return CategoryMapper.toDTOList(categoryRepository.findByHouseholdId(householdId));
+    }
+
     @Override
     public CategoryDTO saveCategory(CategoryCreationRequest category) {
 
@@ -86,7 +90,7 @@ public class CategoryService implements ICategoryService {
         try {
             return CategoryMapper.toDTO(categoryRepository.save(category));
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("Duplicate category name");
+            throw new IllegalArgumentException("Duplicate category name: " + e.getMessage(), e);
         }
 
     }
