@@ -11,6 +11,7 @@ import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryTotalDTO;
 import com.sokratis.ExpenseTracker.Mapper.CategoryMapper;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Mapper.HouseholdMapper;
@@ -43,6 +44,10 @@ public class CategoryService implements ICategoryService {
         // null))
         // .toList();
         return CategoryMapper.toDTOList(categoryRepository.findAll());
+    }
+
+    public List<CategoryTotalDTO> fetchCategoryListWithTotals(Long householdId) {
+        return categoryRepository.findCategoriesWithExpenseTotalsByHouseholdId(householdId);
     }
 
     @Override

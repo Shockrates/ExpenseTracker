@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryTotalDTO;
 import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Service.CategoryService;
@@ -41,10 +42,11 @@ public class CategoryController {
 
     @GetMapping("/household/{householdId}")
     @Operation(summary = "Get Categories by Household ID", description = "Fetch a list of Categories for a specific Household")
-    public ResponseEntity<ApiResponse<List<CategoryDTO>>> getCategoriesByHouseholdId(@PathVariable Long householdId) {
+    public ResponseEntity<ApiResponse<List<CategoryTotalDTO>>> getCategoriesByHouseholdId(
+            @PathVariable Long householdId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Categories for Household",
-                        categoryService.fetchCategoriesByHouseholdId(householdId)));
+                        categoryService.fetchCategoryListWithTotals(householdId)));
     }
 
     @GetMapping("/{id}")
