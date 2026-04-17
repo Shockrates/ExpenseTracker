@@ -63,6 +63,24 @@ public class ExpenseController {
                                                                 expenseService.fetchExpenseList(page, size))));
         }
 
+        @GetMapping("/household/{householdId}")
+        @Operation(summary = "Get all Expenses of a household between two dates", description = "Fetch a list of all Expenses of a hpusehold between two dates")
+        public ResponseEntity<ApiResponse<PageResponse<ExpenseDTO>>> getExpensesBetweenDatesByHousehold(
+                        @PathVariable Long householdId,
+                        @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+                        @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "50") int size) {
+                Page<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenDatesByHousehold(householdId,startDate, endDate, page, size);
+                String message = expenses.isEmpty() ? "No Expenses for this Time Range"
+                                : "List of Expenses between " + startDate + " and " + endDate;
+
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(ApiResponse.success(
+                                                message,
+                                                new PageResponse<ExpenseDTO>(expenses)));
+        }
+
         @GetMapping("/{id}")
         @Operation(summary = "Get Expense by ID", description = "Fetch a single expense by its ID")
         public ResponseEntity<ApiResponse<ExpenseDetailedDTO>> getExpense(@PathVariable Long id) {

@@ -43,6 +43,14 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Page<Expense> findByExpenseDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
+    Page<Expense> findByHouseholdIdAndExpenseDateBetween(
+        Long householdId,
+        LocalDate startDate,
+        LocalDate endDate,
+        Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByExpenseAmountBetween(Double lowestAmount, Double highestAmount, Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(e.expenseAmount), 0) FROM Expense e")

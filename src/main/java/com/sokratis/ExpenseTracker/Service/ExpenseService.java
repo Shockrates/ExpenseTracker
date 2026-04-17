@@ -118,6 +118,19 @@ public class ExpenseService implements IExpenseService {
                 expenseRepository.findByExpenseDateBetween(startDate, endDate, PageRequest.of(page, size)));
     }
 
+     public Page<ExpenseDTO> fetchExpensesBetweenDatesByHousehold(Long householdId, LocalDate startDate, LocalDate endDate, int page, int size) {
+
+        LocalDate now = LocalDate.now();
+        if (startDate == null) {
+            startDate = now.withDayOfMonth(1);
+        }
+        if (endDate == null) {
+            endDate = now;
+        }
+        return ExpenseMapper.toExpenseDTOPage(
+                expenseRepository.findByHouseholdIdAndExpenseDateBetween(householdId,startDate, endDate, PageRequest.of(page, size)));
+    }
+
     public Page<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highestAmount, int page, int size) {
         return ExpenseMapper.toExpenseDTOPage(
                 expenseRepository.findByExpenseAmountBetween(lowestAmount, highestAmount, PageRequest.of(page, size)));
