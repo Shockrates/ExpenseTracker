@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,8 +47,17 @@ public class CategoryService implements ICategoryService {
         return CategoryMapper.toDTOList(categoryRepository.findAll());
     }
 
-    public List<CategoryTotalDTO> fetchCategoryListWithTotals(Long householdId) {
-        return categoryRepository.findCategoriesWithExpenseTotalsByHouseholdId(householdId);
+    public List<CategoryTotalDTO> fetchCategoryListWithTotals(Long householdId, LocalDate startDate,
+            LocalDate endDate) {
+
+        LocalDate now = LocalDate.now();
+        if (startDate == null) {
+            startDate = now.withDayOfMonth(1);
+        }
+        if (endDate == null) {
+            endDate = now;
+        }
+        return categoryRepository.findCategoriesWithExpenseTotalsByHouseholdId(householdId, startDate, endDate);
     }
 
     @Override

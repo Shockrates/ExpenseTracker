@@ -104,7 +104,9 @@ public class ExpenseMapper {
     }
 
     public static Page<ExpenseDTO> toExpenseDTOPage(Page<Expense> expenses) {
-        return expenses.map(expense -> modelMapper.map(expense, ExpenseDTO.class));
+        // return expenses.map(expense -> modelMapper.map(expense, ExpenseDTO.class));
+        return expenses.map(ExpenseMapper::toDTO);
+
     }
 
 }

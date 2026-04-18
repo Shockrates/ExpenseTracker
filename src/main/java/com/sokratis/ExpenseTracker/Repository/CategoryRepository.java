@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,20 +26,25 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByHouseholdId(Long householdId);
 
     @Query("""
-                    SELECT
-                    new com.sokratis.ExpenseTracker.DTO.Category.CategoryTotalDTO(
-                        c.id,
-                        c.categoryName,
-                        c.color,
-                        c.budgetLimit,
-                        c.household.id,
-                        COALESCE(SUM(e.expenseAmount), 0)
+            SELECT
+            new com.sokratis.ExpenseTracker.DTO.Category.CategoryTotalDTO(
+                c.id,
+                c.categoryName,
+                c.color,
+                c.budgetLimit,
+                c.household.id,
+                COALESCE(SUM(e.expenseAmount), 0)
             )
-                    FROM Expense e
-                    JOIN e.expenseCategory c
-                    WHERE c.household.id = :householdId
-                    GROUP BY c
-                    """)
-    List<CategoryTotalDTO> findCategoriesWithExpenseTotalsByHouseholdId(@Param("householdId") Long householdId);
+            FROM Category c
+            LEFT JOIN Expense e
+                ON e.expenseCategory = c
+                AND e.expenseDate BETWEEN :startDate AND :endDate
+            WHERE c.household.id = :householdId
+            GROUP BY c
+                                """)
+    List<CategoryTotalDTO> findCategoriesWithExpenseTotalsByHouseholdId(
+            @Param("householdId") Long householdId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
 }
