@@ -52,7 +52,8 @@ public class CategoryService implements ICategoryService {
 
         LocalDate now = LocalDate.now();
         if (startDate == null) {
-            startDate = now.withDayOfMonth(1);
+            // startDate = now.withDayOfMonth(1);
+            startDate = now.withDayOfYear(1);
         }
         if (endDate == null) {
             endDate = now;
@@ -123,12 +124,24 @@ public class CategoryService implements ICategoryService {
         return expenseRepository.getTotalExpensesByCategory(CategoryId);
     }
 
-    public CategoryDetailedDTO fetchCategoryWithExpenses(Long categoryId) {
+    public CategoryDetailedDTO fetchCategoryWithExpenses(Long categoryId, LocalDate startDate,
+            LocalDate endDate) {
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category));
+        LocalDate now = LocalDate.now();
+        if (startDate == null) {
+            // startDate = now.withDayOfMonth(1);
+            startDate = now.withDayOfYear(1);
+        }
+        if (endDate == null) {
+            endDate = now;
+        }
+        // List<ExpenseDTO> expenseDTOs =
+        // ExpenseMapper.toDTOList(expenseRepository.findByExpenseCategory(category));
+        List<ExpenseDTO> expenseDTOs = ExpenseMapper
+                .toDTOList(expenseRepository.findByExpenseCategoryAndExpenseDateBetween(category, startDate, endDate));
 
         return CategoryMapper.toDetailedDTO(category, expenseDTOs);
         // return new CategoryDTO(

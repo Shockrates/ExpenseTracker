@@ -6,10 +6,11 @@ import java.util.List;
 import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 
 public record CategoryDetailedDTO(
-        Long id,
-        String name,
-        String color,
-        BigDecimal budgetLimit,
-        Long householdId,
-        List<ExpenseDTO> expenses) {
+                Long id,
+                String name,
+                String color,
+                BigDecimal budgetLimit,
+                Long householdId,
+                Double spent,
+                List<ExpenseDTO> expenses) {
 }

@@ -34,6 +34,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByExpenseCategory(Category category);
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
+    List<Expense> findByExpenseCategoryAndExpenseDateBetween(Category category, LocalDate startDate, LocalDate endDate);
+
+    @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     List<Expense> findByHouseholdId(Long householdId);
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
@@ -44,11 +47,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByHouseholdIdAndExpenseDateBetween(
-        Long householdId,
-        LocalDate startDate,
-        LocalDate endDate,
-        Pageable pageable
-    );
+            Long householdId,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable);
 
     @EntityGraph(attributePaths = { "expenseUser", "expenseCategory" })
     Page<Expense> findByExpenseAmountBetween(Double lowestAmount, Double highestAmount, Pageable pageable);

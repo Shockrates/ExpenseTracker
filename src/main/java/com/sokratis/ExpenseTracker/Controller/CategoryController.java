@@ -3,6 +3,7 @@ package com.sokratis.ExpenseTracker.Controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +47,8 @@ public class CategoryController {
         @Operation(summary = "Get Categories by Household ID", description = "Fetch a list of Categories for a specific Household")
         public ResponseEntity<ApiResponse<List<CategoryTotalDTO>>> getCategoriesByHouseholdId(
                         @PathVariable Long householdId,
-                        @RequestParam(required = false) LocalDate startDate,
-                        @RequestParam(required = false) LocalDate endDate) {
+                        @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+                        @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ApiResponse.success("Categories for Household",
                                                 categoryService.fetchCategoryListWithTotals(householdId, startDate,
@@ -108,11 +109,14 @@ public class CategoryController {
 
         @GetMapping("/{id}/expenses")
         @Operation(summary = "Get Categroy and Expenses by Category ID", description = "Fetch a single Category and all of its related expenses by its ID")
-        public ResponseEntity<ApiResponse<CategoryDetailedDTO>> getCategoryWithExpenses(@PathVariable Long id) {
+        public ResponseEntity<ApiResponse<CategoryDetailedDTO>> getCategoryWithExpenses(
+                        @PathVariable Long id,
+                        @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+                        @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
                 System.out.println("All Categories Expenses");
                 return ResponseEntity.status(HttpStatus.OK).body(
                                 ApiResponse.success("Total amount of category is",
-                                                categoryService.fetchCategoryWithExpenses(id)));
+                                                categoryService.fetchCategoryWithExpenses(id, startDate, endDate)));
         }
 
 }

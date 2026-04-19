@@ -39,6 +39,7 @@ public class CategoryMapper extends EntityMapper {
                 category.getColor(),
                 category.getBudgetLimit(),
                 CategoryMapper.getHouseholdId(category),
+                expenseDTOList.stream().mapToDouble(ExpenseDTO::getExpenseAmount).sum(),
                 expenseDTOList);
     }
 
