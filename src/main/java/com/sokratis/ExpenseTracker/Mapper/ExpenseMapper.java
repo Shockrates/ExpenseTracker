@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,9 +96,9 @@ public class ExpenseMapper {
     public static ExpenseListDTO toExpenseListDTO(List<Expense> expenses) {
 
         List<ExpenseDTO> expenseDTOs = ExpenseMapper.toDTOList(expenses);
-        double totalAmount = expenses.stream()
-                .mapToDouble(Expense::getExpenseAmount)
-                .sum();
+        BigDecimal totalAmount = expenses.stream()
+                .map(Expense::getExpenseAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return new ExpenseListDTO(expenseDTOs, totalAmount);
 

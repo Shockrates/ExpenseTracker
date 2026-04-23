@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.DTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class ExpenseListDTO {
 
     private List<ExpenseDTO> expenseList;
-    private Double expenseAmountTotal;
+    private BigDecimal expenseAmountTotal;
 
 }

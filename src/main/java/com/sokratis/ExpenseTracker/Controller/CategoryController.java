@@ -68,9 +68,9 @@ public class CategoryController {
 
         @PostMapping
         @Operation(summary = "Register a Category", description = "Add a new Category to the system")
-        public ResponseEntity<ApiResponse<CategoryDTO>> createCategory(@RequestBody CategoryCreationRequest category) {
+        public ResponseEntity<ApiResponse<CategoryTotalDTO>> createCategory(@RequestBody CategoryCreationRequest category) {
 
-                CategoryDTO createdCategory = categoryService.saveCategory(category);
+                CategoryTotalDTO createdCategory = categoryService.saveCategory(category);
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(ApiResponse.success("Category Created", createdCategory));
 

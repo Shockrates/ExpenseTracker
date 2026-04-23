@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.hibernate.annotations.DynamicInsert;
 import jakarta.persistence.Column;
@@ -31,8 +32,8 @@ public class Expense {
     @Column(name = "expense_id")
     private Long expenseId;
 
-    @Column(name = "expense_amount")
-    private Double expenseAmount;
+    @Column(name = "expense_amount",precision = 10, scale = 2)
+    private BigDecimal expenseAmount;
 
     @Column(name = "expense_date")
     @PastOrPresent(message = "Expense date cannot be in the future")

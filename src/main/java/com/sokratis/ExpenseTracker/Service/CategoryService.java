@@ -1,5 +1,6 @@
 package com.sokratis.ExpenseTracker.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public Optional<CategoryDTO> fetchCategory(Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .map(category -> CategoryMapper.toDTO(category, CategoryDTO.class));
+                .map(category -> CategoryMapper.toDTO(category));
     }
 
     public List<CategoryDTO> fetchCategoriesByHouseholdId(Long householdId) {
@@ -72,14 +73,9 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDTO saveCategory(CategoryCreationRequest category) {
+    public CategoryTotalDTO saveCategory(CategoryCreationRequest category) {
 
-        // if
-        // (categoryRepository.findByCategoryNameIgnoreCase(category.categoryName()).isPresent())
-        // {
-        // throw new IllegalArgumentException("Category with the same name already
-        // exists!");
-        // }
+     
         if (categoryRepository.existsByCategoryNameIgnoreCaseAndHousehold_Id(category.categoryName(),
                 category.householdId())) {
             throw new IllegalArgumentException("Category with the same name already exists!");
@@ -87,7 +83,8 @@ public class CategoryService implements ICategoryService {
 
         Household household = householdRepository.getReferenceById(category.householdId());
         Category savedCategory = categoryRepository.save(CategoryMapper.toEntity(category, household));
-        return CategoryMapper.toDTO(savedCategory);
+        //return CategoryMapper.toDTO(savedCategory);
+        return new CategoryTotalDTO(savedCategory, BigDecimal.ZERO);
     }
 
     @Transactional
@@ -144,12 +141,6 @@ public class CategoryService implements ICategoryService {
                 .toDTOList(expenseRepository.findByExpenseCategoryAndExpenseDateBetween(category, startDate, endDate));
 
         return CategoryMapper.toDetailedDTO(category, expenseDTOs);
-        // return new CategoryDTO(
-        // category.getCategoryId(),
-        // category.getCategoryName(),
-        // category.getColor(),
-        // category.getBudgetLimit(),
-        // CategoryMapper.getHouseholdId(category));
     }
 
 }

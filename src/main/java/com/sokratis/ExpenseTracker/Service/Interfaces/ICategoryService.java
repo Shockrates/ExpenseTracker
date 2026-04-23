@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
+import com.sokratis.ExpenseTracker.DTO.Category.CategoryTotalDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 
 public interface ICategoryService {
@@ -30,7 +31,7 @@ public interface ICategoryService {
      * @param Category the Category to save
      * @return the saved Category
      */
-    CategoryDTO saveCategory(CategoryCreationRequest category);
+    CategoryTotalDTO saveCategory(CategoryCreationRequest category);
 
     /**
      * Updates an existing Category entity.
