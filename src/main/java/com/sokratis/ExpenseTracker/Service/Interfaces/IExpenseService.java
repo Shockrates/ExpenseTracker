@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseDetailedDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDetailedDTO;
 import com.sokratis.ExpenseTracker.Model.Expense;
 
 public interface IExpenseService {

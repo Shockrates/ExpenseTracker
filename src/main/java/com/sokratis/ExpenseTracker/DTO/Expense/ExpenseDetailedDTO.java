@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.DTO;
+package com.sokratis.ExpenseTracker.DTO.Expense;
 
 import java.time.LocalDate;
 
@@ -12,17 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseDTO {
-
+public class ExpenseDetailedDTO {
     private Long expenseId;
     private Double expenseAmount;
     private LocalDate expenseDate;
     private String expenseDescription;
-    private Long categoryId;
-    private String categoryName;
-    private Long paidById;
-    private String paidByName;
-    // private CategoryDTO expenseCategory;
-    // private UserDTO expenseUser;
+    private CategoryDTO expenseCategory;
+    private UserDTO expenseUser;
 
 }

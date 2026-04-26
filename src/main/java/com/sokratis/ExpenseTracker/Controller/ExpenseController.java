@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseDetailedDTO;
 import com.sokratis.ExpenseTracker.DTO.Common.ApiResponse;
 import com.sokratis.ExpenseTracker.DTO.Common.PageResponse;
-import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDetailedDTO;
 import com.sokratis.ExpenseTracker.Model.Expense;
 import com.sokratis.ExpenseTracker.Service.ExpenseService;
 
@@ -71,7 +71,8 @@ public class ExpenseController {
                         @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "50") int size) {
-                Page<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenDatesByHousehold(householdId,startDate, endDate, page, size);
+                Page<ExpenseDTO> expenses = expenseService.fetchExpensesBetweenDatesByHousehold(householdId, startDate,
+                                endDate, page, size);
                 String message = expenses.isEmpty() ? "No Expenses for this Time Range"
                                 : "List of Expenses between " + startDate + " and " + endDate;
 
@@ -139,7 +140,7 @@ public class ExpenseController {
                 Page<ExpenseDTO> expenses = expenseService.fetchExpensesByUser(userId, page, size);
                 String message = expenses.isEmpty() ? "No Expenses for this User"
                                 : "List of Expenses by User "
-                                                + expenses.getContent().get(0).getPaidByName();
+                                                + expenses.getContent().get(0).userSummary().userName();
                 System.out.println(expenses);
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ApiResponse.success(
@@ -158,7 +159,7 @@ public class ExpenseController {
                 Page<ExpenseDTO> expenses = expenseService.fetchExpensesByCategory(categoryId, page, size);
                 String message = expenses.isEmpty() ? "No Expenses for this Category"
                                 : "List of Expenses by Category "
-                                                + expenses.getContent().get(0).getCategoryName();
+                                                + expenses.getContent().get(0).categorySummary().categoryName();
                 System.out.println(expenses);
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ApiResponse.success(

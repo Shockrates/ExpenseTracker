@@ -9,10 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseDetailedDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDetailedDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseListDTO;
 import com.sokratis.ExpenseTracker.Exceptions.ResourceNotFoundException;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Model.Category;
@@ -118,7 +118,8 @@ public class ExpenseService implements IExpenseService {
                 expenseRepository.findByExpenseDateBetween(startDate, endDate, PageRequest.of(page, size)));
     }
 
-     public Page<ExpenseDTO> fetchExpensesBetweenDatesByHousehold(Long householdId, LocalDate startDate, LocalDate endDate, int page, int size) {
+    public Page<ExpenseDTO> fetchExpensesBetweenDatesByHousehold(Long householdId, LocalDate startDate,
+            LocalDate endDate, int page, int size) {
 
         LocalDate now = LocalDate.now();
         if (startDate == null) {
@@ -128,7 +129,8 @@ public class ExpenseService implements IExpenseService {
             endDate = now;
         }
         return ExpenseMapper.toExpenseDTOPage(
-                expenseRepository.findByHouseholdIdAndExpenseDateBetween(householdId,startDate, endDate, PageRequest.of(page, size)));
+                expenseRepository.findByHouseholdIdAndExpenseDateBetween(householdId, startDate, endDate,
+                        PageRequest.of(page, size)));
     }
 
     public Page<ExpenseDTO> fetchExpensesBetweenRanges(Double lowestAmount, Double highestAmount, int page, int size) {

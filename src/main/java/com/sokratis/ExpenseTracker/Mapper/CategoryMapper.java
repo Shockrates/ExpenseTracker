@@ -1,13 +1,14 @@
 package com.sokratis.ExpenseTracker.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Household;
 
@@ -39,7 +40,8 @@ public class CategoryMapper extends EntityMapper {
                 category.getColor(),
                 category.getBudgetLimit(),
                 CategoryMapper.getHouseholdId(category),
-                expenseDTOList.stream().mapToDouble(ExpenseDTO::getExpenseAmount).sum(),
+                // expenseDTOList.stream().mapToDouble(ExpenseDTO::getExpenseAmount).sum(),
+                expenseDTOList.stream().map(ExpenseDTO::expenseAmount).reduce(BigDecimal.ZERO, BigDecimal::add),
                 expenseDTOList);
     }
 

@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseDetailedDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseListDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
-import com.sokratis.ExpenseTracker.DTO.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseCreationRequest;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDetailedDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseListDTO;
 import com.sokratis.ExpenseTracker.Model.Category;
 import com.sokratis.ExpenseTracker.Model.Expense;
 
@@ -23,21 +23,28 @@ public class ExpenseMapper {
             return null;
         }
 
-        ExpenseDTO dto = modelMapper.map(expense, ExpenseDTO.class);
-
+        ExpenseDTO.UserSummary user = null;
         if (expense.getExpenseUser() != null) {
-            // dto.setExpenseUser(UserMapper.toDTO(expense.getExpenseUser()));
-            dto.setPaidById(expense.getExpenseUser().getUserId());
-            dto.setPaidByName(expense.getExpenseUser().getUserName());
+            user = new ExpenseDTO.UserSummary(
+                    expense.getExpenseUser().getUserId(),
+                    expense.getExpenseUser().getUserName());
         }
 
+        ExpenseDTO.CategorySummary category = null;
         if (expense.getExpenseCategory() != null) {
-            // dto.setExpenseCategory(CategoryMapper.toDTO(expense.getExpenseCategory()));
-            dto.setCategoryId(expense.getExpenseCategory().getCategoryId());
-            dto.setCategoryName(expense.getExpenseCategory().getCategoryName());
+            category = new ExpenseDTO.CategorySummary(
+                    expense.getExpenseCategory().getCategoryId(),
+                    expense.getExpenseCategory().getCategoryName(),
+                    expense.getExpenseCategory().getColor());
         }
 
-        return dto;
+        return new ExpenseDTO(
+                expense.getExpenseId(),
+                expense.getExpenseAmount(),
+                expense.getExpenseDate(),
+                expense.getExpenseDescription(),
+                category,
+                user);
     }
 
     public static ExpenseDetailedDTO toDetailedDTO(Expense expense) {

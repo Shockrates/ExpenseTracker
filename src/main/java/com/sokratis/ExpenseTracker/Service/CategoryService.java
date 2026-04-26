@@ -9,11 +9,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.sokratis.ExpenseTracker.DTO.ExpenseDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryCreationRequest;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryDetailedDTO;
 import com.sokratis.ExpenseTracker.DTO.Category.CategoryTotalDTO;
+import com.sokratis.ExpenseTracker.DTO.Expense.ExpenseDTO;
 import com.sokratis.ExpenseTracker.Mapper.CategoryMapper;
 import com.sokratis.ExpenseTracker.Mapper.ExpenseMapper;
 import com.sokratis.ExpenseTracker.Mapper.HouseholdMapper;
@@ -75,7 +75,6 @@ public class CategoryService implements ICategoryService {
     @Override
     public CategoryTotalDTO saveCategory(CategoryCreationRequest category) {
 
-     
         if (categoryRepository.existsByCategoryNameIgnoreCaseAndHousehold_Id(category.categoryName(),
                 category.householdId())) {
             throw new IllegalArgumentException("Category with the same name already exists!");
@@ -83,7 +82,7 @@ public class CategoryService implements ICategoryService {
 
         Household household = householdRepository.getReferenceById(category.householdId());
         Category savedCategory = categoryRepository.save(CategoryMapper.toEntity(category, household));
-        //return CategoryMapper.toDTO(savedCategory);
+        // return CategoryMapper.toDTO(savedCategory);
         return new CategoryTotalDTO(savedCategory, BigDecimal.ZERO);
     }
 

@@ -1,4 +1,4 @@
-package com.sokratis.ExpenseTracker.DTO;
+package com.sokratis.ExpenseTracker.DTO.Expense;
 
 import java.math.BigDecimal;
 import java.util.List;
